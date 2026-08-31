@@ -1,0 +1,230 @@
+<!doctype html><html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Executivo — Pesos & ADM</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#07111d;--p:#0d1b2a;--p2:#112236;--line:#203a55;--txt:#eef5fb;--mut:#8da4ba;--teal:#1d7482;--blue:#3aa4ff;--green:#31c38a;--gold:#d9b15b;--red:#ff6d6d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#07111d,#081725 52%,#050b12);color:var(--txt);font-family:Inter,Segoe UI,Arial,sans-serif}
+header{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#07111deb;border-bottom:1px solid #173047;position:sticky;top:0;z-index:20;backdrop-filter:blur(10px)}
+.brand b{font-size:20px}.brand span{display:block;font-size:11px;color:var(--mut);margin-top:3px}.wrap{max-width:1550px;margin:auto;padding:26px}.tabs{display:flex;gap:8px}.tab,.btn{border:1px solid #29465f;background:#0d2032;color:#cfe0ef;padding:10px 14px;border-radius:9px;font-weight:800;cursor:pointer}.tab.active{background:#1a5273;color:#fff}
+.top{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:8px 0 18px}.ey{font-size:10px;letter-spacing:1.2px;color:#81abc7;font-weight:800}.top h1{font-size:29px;margin:5px 0}.sub{font-size:12px;color:var(--mut)}
+.filters{display:flex;gap:9px;flex-wrap:wrap}.sel{background:#0b1b2b;border:1px solid #294a67;color:#fff;border-radius:9px;padding:10px 12px;min-width:190px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}.card{background:linear-gradient(180deg,#102238,#0a1726);border:1px solid #1d3852;border-radius:14px;padding:16px;box-shadow:0 16px 35px #0002}.kl{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#8fa7bd}.kv{font-size:26px;font-weight:900;margin-top:7px}.ks{font-size:11px;color:#6f89a2;margin-top:4px}
+.tableCard{padding:0;overflow:hidden}.tableTitle{padding:14px 16px;border-bottom:1px solid #1d3852;font-size:12px;font-weight:850}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#1d7380;color:#fff;text-align:left;padding:11px 10px;white-space:nowrap}td{padding:10px;border-bottom:1px solid #1b3248;background:#0b1928}tr:nth-child(even) td{background:#0d1d2c}.r{text-align:right}.neg{color:var(--red);font-weight:800}.ok{color:var(--green);font-weight:800}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}.chart{height:305px}.hidden{display:none!important}
+.lock{min-height:520px;display:grid;place-items:center}.lockbox{width:min(430px,92vw);text-align:center;background:#0c1c2c;border:1px solid #29465f;border-radius:18px;padding:30px}.lockbox p{font-size:12px;color:var(--mut);line-height:1.5}.input{width:100%;background:#06121e;color:#fff;border:1px solid #33536f;border-radius:9px;padding:13px;margin:8px 0}.gold{width:100%;background:linear-gradient(135deg,#e2bd69,#b98d38);color:#111;border:0}.err{min-height:17px;color:#ff8989;font-size:11px;margin-top:7px}
+.note{font-size:11px;color:#86a0b8;border:1px dashed #29445c;border-radius:10px;padding:10px 12px;margin-bottom:12px}
+@media(max-width:900px){.kpis,.grid2{grid-template-columns:1fr 1fr}.top{display:block}.filters{margin-top:12px}}@media(max-width:620px){.kpis,.grid2{grid-template-columns:1fr}.wrap{padding:15px}header{padding:0 13px}}
+</style></head><body>
+<header><div class="brand"><b>Painel Executivo</b><span>Controle de Pesos • Administração Financeira</span></div><div class="tabs"><button class="tab active" data-tab="peso">PAINEL DE PESOS</button><button class="tab" data-tab="adm">ADM 🔒</button></div></header>
+<main class="wrap">
+
+<section id="peso">
+<div class="top"><div><div class="ey">VISÃO GERENCIAL</div><h1>Controle de Pesos por Item PPU</h1><div class="sub">Filtros por item, mês e TAG. Cada TAG aparece somente nos itens PPU em que possui lançamento.</div></div>
+<div class="filters"><select id="itemF" class="sel"></select><select id="monthF" class="sel"></select><select id="tagF" class="sel"></select></div></div>
+<div class="note"><b>Regra:</b> contratado, executado, saldo e percentual são tratados individualmente por item PPU.</div>
+<div class="kpis" id="pesoKpis"></div>
+<div class="card tableCard"><div class="tableTitle">QUADRO DE PESOS — MODELO PPU</div><div class="tableWrap"><table><thead><tr><th>Item</th><th>Descrição</th><th class="r">Qtd. Contratada (kg)</th><th class="r">Qtd. Executada (kg)</th><th class="r">Saldo (kg)</th><th class="r">Excedente (kg)</th><th class="r">% Executado</th></tr></thead><tbody id="pesoTable"></tbody></table></div></div>
+
+<div class="card tableCard" style="margin-top:14px"><div class="tableTitle">EXECUÇÃO DO MÊS E ACUMULADO — PESOS</div><div class="tableWrap"><table><thead><tr><th>Item</th><th>Descrição</th><th class="r">Executado no mês (kg)</th><th class="r">Acumulado até o mês (kg)</th><th class="r">Contratado (kg)</th><th class="r">Saldo acumulado (kg)</th><th class="r">Excedente acumulado (kg)</th><th class="r">% acumulado</th></tr></thead><tbody id="pesoMonthTable"></tbody></table></div></div>
+
+<div class="grid2"><div class="card"><div class="tableTitle" style="padding:0 0 12px;border:0">EXECUTADO POR TAG</div><div class="chart"><canvas id="tagChart"></canvas></div></div><div class="card"><div class="tableTitle" style="padding:0 0 12px;border:0">EVOLUÇÃO MENSAL</div><div class="chart"><canvas id="monthChart"></canvas></div></div></div>
+</section>
+
+<section id="adm" class="hidden">
+<div id="lock" class="lock"><div class="lockbox"><div style="font-size:40px">🔐</div><h2>Área ADM</h2><p>O painel financeiro é restrito e permanece criptografado até a senha correta ser informada.</p><input id="pwd" class="input" type="password" placeholder="Senha ADM"><button id="unlock" class="btn gold">ENTRAR NO ADM</button><div id="err" class="err"></div></div></div>
+<div id="admContent" class="hidden">
+<div class="top"><div><div class="ey">ÁREA RESTRITA</div><h1>Painel Financeiro</h1><div class="sub">Filtros por item PPU, mês e TAG, com visão semelhante ao painel de pesos.</div></div>
+<div class="filters"><select id="finItemF" class="sel"></select><select id="finMonthF" class="sel"></select><select id="finTagF" class="sel"></select></div></div>
+<div class="kpis" id="finKpis"></div>
+<div class="card tableCard"><div class="tableTitle">INDICADORES FINANCEIROS POR ITEM</div><div class="tableWrap"><table><thead><tr><th>Item</th><th class="r">Valor Unitário</th><th>Descrição</th><th class="r">Contrato (R$)</th><th class="r">Medido (R$)</th><th class="r">Saldo (R$)</th><th class="r">Excedente (R$)</th><th class="r">% Executado</th></tr></thead><tbody id="finTable"></tbody></table></div></div>
+
+<div class="card tableCard" style="margin-top:14px"><div class="tableTitle">MEDIÇÃO DO MÊS E ACUMULADO</div><div class="tableWrap"><table><thead><tr><th>Item</th><th>Descrição</th><th class="r">Medição do mês (R$)</th><th class="r">Acumulado até o mês (R$)</th><th class="r">Contrato (R$)</th><th class="r">% acumulado</th></tr></thead><tbody id="finMonthTable"></tbody></table></div></div>
+
+<div class="grid2"><div class="card"><div class="tableTitle" style="padding:0 0 12px;border:0">VALOR MEDIDO POR TAG</div><div class="chart"><canvas id="finTagChart"></canvas></div></div><div class="card"><div class="tableTitle" style="padding:0 0 12px;border:0">EVOLUÇÃO FINANCEIRA MENSAL</div><div class="chart"><canvas id="finMonthChart"></canvas></div></div></div>
+</div></section>
+</main>
+<script>
+const D={"rows":[["JANEIRO","PIPE-RACK","3.9.3",444.4],["JANEIRO","CABLE-RACK","3.9.3",1910.5],["JANEIRO","CABLE-RACK","3.9.1",1910.5],["FEVEREIRO","CABLE-RACK","4.3.6.2",915.96],["ABRIL","CABLE-RACK","3.9.3",6881.92],["ABRIL","CABLE-RACK","4.3.6.2",1527.43],["MAIO","CHAMINÉ F-12001","3.9.3",1162.4],["MAIO","DUTOS DE GÁS F-12001","3.9.3",1004.59],["MAIO","F-12001A/B","3.9.3",1043.21],["MAIO","V-12051","3.9.3",71.7],["MAIO","B-12002 A/C","3.9.3",77.7],["MAIO","V-12006","3.9.3",150.8],["MAIO","CABLE-RACK","3.9.3",915.66],["MAIO","CABLE-RACK","4.3.6.2",3978.97],["JUNHO","PIPE-RACK","3.9.3",8521.35],["JUNHO","PIPE-RACK","4.3.6.2",4592.25],["JUNHO","PIPE-RACK","3.9.1",13144.9],["JUNHO","PIPE-RACK","3.9.2",7563.55],["JUNHO","SE-1200","4.3.6.2",5982.01],["JUNHO","PLATAFORMA DOS AIRCOOLERS","4.3.6.2",1381.7],["JUNHO","PLATAFORMA DOS AIRCOOLERS","4.3.6.1",1381.7],["JULHO","PIPE-RACK","3.9.3",4734.57],["JULHO","PIPE-RACK","4.3.6.2",6219.63],["JULHO","PIPE-RACK","3.9.2",9543.0],["JULHO","PLATAFORMA DOS AIRCOOLERS","4.3.6.2",9258.67],["JULHO","PLATAFORMA DOS AIRCOOLERS","4.3.6.1",9258.67],["JULHO","CANALETA DA CASA DOS COMPRESSORES","3.9.3",914.2],["JULHO","CASA DOS COMPRESSORES","4.3.6.1",9091.17],["JULHO","PIPE-RACK","4.3.6.1",6200.0],["JULHO","SUPORTES DE TUBULAÇÃO","4.3.6.1",3500.0],["AGOSTO","PIPE-RACK","3.9.1",14777.35],["AGOSTO","PIPE-RACK","3.9.1",15774.0],["AGOSTO","PIPE-RACK","3.9.2",3420.0],["AGOSTO","PIPE-RACK","4.3.6.2",12338.05],["AGOSTO","CASA DOS COMPRESSORES","4.3.6.2",7000.0],["AGOSTO","CASA DOS COMPRESSORES","3.9.2",3200.0],["AGOSTO","PLATAFORMA DOS AIRCOOLERS","4.3.6.2",959.18],["AGOSTO","PLATAFORMA DOS AIRCOOLERS","4.3.6.1",959.18],["AGOSTO","SUPORTES DE TUBULAÇÃO","4.3.6.2",3512.2],["ABRIL","CABLE-RACK","4.3.6.1",1527.43],["MAIO","CABLE-RACK","4.3.6.1",6712.92],["JUNHO","PIPE-RACK","4.3.6.1",5982.01],["AGOSTO","PIPE-RACK","4.3.6.1",2766.04],["AGOSTO","SUPORTES DE TUBULAÇÃO","4.3.6.1",8570.42]],"items":{"3.9.1":{"desc":"DESMONTAGEM","contractKg":30487.0,"unit":3.64,"contractR":110972.68},"3.9.2":{"desc":"REPAROS (MISCELÂNIAS)","contractKg":27833.0,"unit":23.5,"contractR":654075.5},"3.9.3":{"desc":"MONTAGEM (PEÇAS CLIENTE)","contractKg":27833.0,"unit":9.97,"contractR":277495.01},"4.3.6.1":{"desc":"FABRICAÇÃO","contractKg":66101.0,"unit":10.34,"contractR":683484.34},"4.3.6.2":{"desc":"MONTAGEM (PEÇAS MCM/CONSAG)","contractKg":68775.0,"unit":13.24,"contractR":910581.0}},"months":["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"]}, ENC={salt:"2Aaa2lRzugYIVwOcQ15LoQ==",iv:"kO+TsDGOqithazM8",data:"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",iterations:250000};
+const br=n=>new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(n), pc=n=>new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:1}).format(n), brl=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
+const mi=m=>D.months.indexOf(m); let charts={};
+
+function fillFilters(itemEl,monthEl,tagEl,base){
+ itemEl.innerHTML='<option value="TODOS">ITEM PPU: TODOS</option>'+Object.keys(base.items).map(i=>`<option value="${i}">${i} — ${base.items[i].desc}</option>`).join('');
+ monthEl.innerHTML='<option value="TODOS">MÊS: TODOS</option>'+base.months.slice(0,8).map(m=>`<option value="${m}">ATÉ ${m}</option>`).join('');
+ refreshTags(itemEl,tagEl,base);
+}
+function refreshTags(itemEl,tagEl,base){
+ let cur=tagEl.value, item=itemEl.value;
+ let tags=[...new Set(base.rows.filter(r=>item==='TODOS'||r[2]===item).map(r=>r[1]))].sort();
+ tagEl.innerHTML='<option value="TODAS">TAG: TODAS</option>'+tags.map(t=>`<option value="${t}">${t}</option>`).join('');
+ if(tags.includes(cur))tagEl.value=cur;
+}
+function selectedRows(base,itemEl,monthEl,tagEl){
+ let i=itemEl.value,m=monthEl.value,t=tagEl.value;
+ return base.rows.filter(r=>(i==='TODOS'||r[2]===i)&&(m==='TODOS'||mi(r[0])<=mi(m))&&(t==='TODAS'||r[1]===t));
+}
+function byItem(rows){let a={};rows.forEach(r=>a[r[2]]=(a[r[2]]||0)+r[3]);return a}
+function makeBar(canvasId,key,labels,vals,label,color){
+ if(charts[key])charts[key].destroy();
+ charts[key]=new Chart(document.getElementById(canvasId),{type:'bar',data:{labels,datasets:[{label,data:vals,backgroundColor:color}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{labels:{color:'#bfd0df'}}},scales:{x:{ticks:{color:'#7891aa'},grid:{color:'#ffffff0b'}},y:{ticks:{color:'#93abc0'},grid:{display:false}}}}});
+}
+function makeLine(canvasId,key,labels,vals,label,color){
+ if(charts[key])charts[key].destroy();
+ charts[key]=new Chart(document.getElementById(canvasId),{type:'line',data:{labels,datasets:[{label,data:vals,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#bfd0df'}}},scales:{x:{ticks:{color:'#7891aa'},grid:{color:'#ffffff0b'}},y:{ticks:{color:'#7891aa'},grid:{color:'#ffffff0b'}}}}});
+}
+
+/* PESOS */
+const itemF=document.getElementById('itemF'),monthF=document.getElementById('monthF'),tagF=document.getElementById('tagF');
+fillFilters(itemF,monthF,tagF,D);
+itemF.onchange=()=>{refreshTags(itemF,tagF,D);renderPeso()}; monthF.onchange=renderPeso; tagF.onchange=renderPeso;
+function renderPeso(){
+ let rows=selectedRows(D,itemF,monthF,tagF), ex=byItem(rows), sel=itemF.value, shown=sel==='TODOS'?Object.keys(D.items):[sel];
+ let tagCount=new Set(rows.map(r=>r[1])).size, execSum=rows.reduce((s,r)=>s+r[3],0), p=sel==='TODOS'?null:(ex[sel]||0)/D.items[sel].contractKg;
+ document.getElementById('pesoKpis').innerHTML=
+ `<div class="card"><div class="kl">Peso executado no filtro</div><div class="kv">${br(execSum)} kg</div><div class="ks">Somatório dos lançamentos filtrados</div></div>`+
+ `<div class="card"><div class="kl">Itens PPU exibidos</div><div class="kv">${shown.length}</div></div>`+
+ `<div class="card"><div class="kl">TAGs no filtro</div><div class="kv">${tagCount}</div></div>`+
+ `<div class="card"><div class="kl">${sel==='TODOS'?'Período':'Avanço do item'}</div><div class="kv">${sel==='TODOS'?(monthF.value==='TODOS'?'Todos os meses':'Até '+monthF.value):pc(p)}</div></div>`;
+ document.getElementById('pesoTable').innerHTML=shown.map(i=>{let x=D.items[i],v=ex[i]||0,s=x.contractKg-v,p=v/x.contractKg;let saldo=Math.max(s,0), excedente=Math.max(-s,0);return `<tr><td><b>${i}</b></td><td>${x.desc}</td><td class="r">${br(x.contractKg)}</td><td class="r">${br(v)}</td><td class="r">${br(saldo)}</td><td class="r ${excedente>0?'neg':''}">${br(excedente)}</td><td class="r ${p>=1?'ok':''}">${pc(p)}</td></tr>`}).join('');
+
+ // Tabela de pesos: executado somente no mês selecionado e acumulado até o mês.
+ // Em "TODOS", considera AGOSTO como último mês com dados na base atual.
+ let selectedPesoMonth = monthF.value==='TODOS' ? 'AGOSTO' : monthF.value;
+ let pesoMonthIdx = D.months.indexOf(selectedPesoMonth);
+
+ document.getElementById('pesoMonthTable').innerHTML = shown.map(k=>{
+   let x=D.items[k];
+
+   let monthKg=D.rows
+     .filter(r=>r[0]===selectedPesoMonth && r[2]===k && (tagF.value==='TODAS'||r[1]===tagF.value))
+     .reduce((s,r)=>s+r[3],0);
+
+   let accumulatedKg=D.rows
+     .filter(r=>D.months.indexOf(r[0])<=pesoMonthIdx && r[2]===k && (tagF.value==='TODAS'||r[1]===tagF.value))
+     .reduce((s,r)=>s+r[3],0);
+
+   let diff=x.contractKg-accumulatedKg;
+   let saldo=Math.max(diff,0), excedente=Math.max(-diff,0);
+   let pAccum=x.contractKg ? accumulatedKg/x.contractKg : 0;
+
+   return `<tr><td><b>${k}</b></td><td>${x.desc}</td><td class="r">${br(monthKg)}</td><td class="r">${br(accumulatedKg)}</td><td class="r">${br(x.contractKg)}</td><td class="r">${br(saldo)}</td><td class="r ${excedente>0?'neg':''}">${br(excedente)}</td><td class="r ${pAccum>=1?'ok':''}">${pc(pAccum)}</td></tr>`;
+ }).join('');
+
+ let bt={}; rows.forEach(r=>bt[r[1]]=(bt[r[1]]||0)+r[3]); let te=Object.entries(bt).sort((a,b)=>b[1]-a[1]);
+ makeBar('tagChart','tag',te.map(x=>x[0]),te.map(x=>x[1]),'kg executado','#3aa4ff');
+ let md=D.months.slice(0,8).map(m=>D.rows.filter(r=>r[0]===m&&(itemF.value==='TODOS'||r[2]===itemF.value)&&(tagF.value==='TODAS'||r[1]===tagF.value)).reduce((s,r)=>s+r[3],0));
+ makeLine('monthChart','month',D.months.slice(0,8),md,'kg no mês','#31c38a');
+}
+renderPeso();
+
+/* NAVEGAÇÃO */
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');let a=b.dataset.tab==='adm';document.getElementById('peso').classList.toggle('hidden',a);document.getElementById('adm').classList.toggle('hidden',!a)});
+
+/* ADM */
+function bytes(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
+async function decrypt(p){let km=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),{name:'PBKDF2'},false,['deriveKey']);let k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:bytes(ENC.salt),iterations:ENC.iterations,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);let raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(ENC.iv)},k,bytes(ENC.data));return JSON.parse(new TextDecoder().decode(raw))}
+let F=null, finInit=false;
+document.getElementById('unlock').onclick=async()=>{let e=document.getElementById('err');e.textContent='Validando...';try{F=await decrypt(document.getElementById('pwd').value);e.textContent='';document.getElementById('lock').classList.add('hidden');document.getElementById('admContent').classList.remove('hidden');if(!finInit){initFin();finInit=true}renderFin()}catch(x){e.textContent='Senha inválida.'}};
+document.getElementById('pwd').onkeydown=e=>{if(e.key==='Enter')document.getElementById('unlock').click()};
+
+function initFin(){
+ const i=document.getElementById('finItemF'),m=document.getElementById('finMonthF'),t=document.getElementById('finTagF');
+ fillFilters(i,m,t,F);
+ i.onchange=()=>{refreshTags(i,t,F);renderFin()};m.onchange=renderFin;t.onchange=renderFin;
+}
+function renderFin(){
+ const i=document.getElementById('finItemF'),m=document.getElementById('finMonthF'),t=document.getElementById('finTagF');
+ let rows=selectedRows(F,i,m,t), ex=byItem(rows), shown=i.value==='TODOS'?Object.keys(F.items):[i.value];
+
+ // Medição reconhecida: cada item é limitado ao valor contratado do próprio PPU.
+ let recognizedByItem={}, rawByItem={}, excessByItem={};
+ shown.forEach(k=>{
+   let x=F.items[k];
+   let raw=(ex[k]||0)*x.unit;
+   let recognized=Math.min(raw,x.contractR);
+   rawByItem[k]=raw;
+   recognizedByItem[k]=recognized;
+   excessByItem[k]=Math.max(raw-x.contractR,0);
+ });
+
+ let contract=shown.reduce((s,k)=>s+F.items[k].contractR,0);
+ let measured=shown.reduce((s,k)=>s+recognizedByItem[k],0);
+ let balance=Math.max(contract-measured,0);
+ let p=contract?Math.min(measured/contract,1):0;
+
+ document.getElementById('finKpis').innerHTML=
+ `<div class="card"><div class="kl">Contrato no filtro</div><div class="kv">${brl(contract)}</div><div class="ks">${i.value==='TODOS'?'Soma dos itens PPU exibidos':'Contrato do item selecionado'}</div></div>`+
+ `<div class="card"><div class="kl">Valor medido reconhecido</div><div class="kv">${brl(measured)}</div><div class="ks">Limitado ao valor contratado de cada item</div></div>`+
+ `<div class="card"><div class="kl">Saldo contratual</div><div class="kv">${brl(balance)}</div><div class="ks">Contrato menos medição reconhecida</div></div>`+
+ `<div class="card"><div class="kl">% Executado</div><div class="kv ${p>=1?'ok':''}">${pc(p)}</div><div class="ks">Indicador limitado a 100%</div></div>`;
+
+ document.getElementById('finTable').innerHTML=shown.map(k=>{
+   let x=F.items[k], raw=rawByItem[k], v=recognizedByItem[k], excess=excessByItem[k];
+   let s=Math.max(x.contractR-v,0), pp=x.contractR?Math.min(v/x.contractR,1):0;
+   return `<tr><td><b>${k}</b></td><td class="r">${brl(x.unit)}</td><td>${x.desc}</td><td class="r">${brl(x.contractR)}</td><td class="r">${brl(v)}</td><td class="r">${brl(s)}</td><td class="r ${excess>0?'neg':''}">${brl(excess)}</td><td class="r ${pp>=1?'ok':''}">${pc(pp)}</td></tr>`;
+ }).join('');
+
+ // Tabela específica do mês selecionado + acumulado até o mês.
+ // Se "TODOS" estiver selecionado, usa o último mês disponível (AGOSTO).
+ let selectedMonth = m.value==='TODOS' ? 'AGOSTO' : m.value;
+ let selMonthIdx = F.months.indexOf(selectedMonth);
+
+ document.getElementById('finMonthTable').innerHTML = shown.map(k=>{
+   let x=F.items[k];
+
+   // Bruto acumulado antes do mês selecionado, respeitando filtro de TAG.
+   let rawBefore = F.rows
+     .filter(r=>F.months.indexOf(r[0])<selMonthIdx && r[2]===k && (t.value==='TODAS'||r[1]===t.value))
+     .reduce((s,r)=>s+r[3]*x.unit,0);
+
+   // Bruto somente do mês selecionado.
+   let rawMonth = F.rows
+     .filter(r=>r[0]===selectedMonth && r[2]===k && (t.value==='TODAS'||r[1]===t.value))
+     .reduce((s,r)=>s+r[3]*x.unit,0);
+
+   // Aplicação do teto contratual por item:
+   // reconhecido antes + parcela reconhecida deste mês, sem ultrapassar o contrato.
+   let recognizedBefore = Math.min(rawBefore, x.contractR);
+   let capacity = Math.max(x.contractR - recognizedBefore, 0);
+   let recognizedMonth = Math.min(rawMonth, capacity);
+   let accumulated = Math.min(recognizedBefore + recognizedMonth, x.contractR);
+   let pAccum = x.contractR ? Math.min(accumulated/x.contractR,1) : 0;
+
+   return `<tr><td><b>${k}</b></td><td>${x.desc}</td><td class="r">${brl(recognizedMonth)}</td><td class="r">${brl(accumulated)}</td><td class="r">${brl(x.contractR)}</td><td class="r ${pAccum>=1?'ok':''}">${pc(pAccum)}</td></tr>`;
+ }).join('');
+
+ // Gráfico por TAG também respeita o teto contratual por item no conjunto filtrado.
+ let rawTagItem={};
+ rows.forEach(r=>{
+   let key=r[1]+'|||'+r[2];
+   rawTagItem[key]=(rawTagItem[key]||0)+r[3]*F.items[r[2]].unit;
+ });
+ let bt={};
+ Object.entries(rawTagItem).forEach(([key,val])=>{
+   let [tag,item]=key.split('|||');
+   let capped=Math.min(val,F.items[item].contractR);
+   bt[tag]=(bt[tag]||0)+capped;
+ });
+ let te=Object.entries(bt).sort((a,b)=>b[1]-a[1]);
+ makeBar('finTagChart','finTag',te.map(x=>x[0]),te.map(x=>x[1]),'Valor medido reconhecido (R$)','#d9b15b');
+
+ // Evolução mensal reconhecida: calcula acumulado por item, aplica teto e mostra o incremento reconhecido em cada mês.
+ let monthlyRecognized=[], cumulativeByItem={};
+ F.months.slice(0,8).forEach(mm=>{
+   let before={...cumulativeByItem};
+   F.rows.filter(r=>r[0]===mm&&(i.value==='TODOS'||r[2]===i.value)&&(t.value==='TODAS'||r[1]===t.value)).forEach(r=>{
+     cumulativeByItem[r[2]]=(cumulativeByItem[r[2]]||0)+r[3]*F.items[r[2]].unit;
+   });
+   let inc=0;
+   Object.keys(F.items).forEach(k=>{
+     if(i.value!=='TODOS' && k!==i.value) return;
+     let prev=Math.min(before[k]||0,F.items[k].contractR);
+     let curr=Math.min(cumulativeByItem[k]||0,F.items[k].contractR);
+     inc+=Math.max(curr-prev,0);
+   });
+   monthlyRecognized.push(inc);
+ });
+ makeLine('finMonthChart','finMonth',F.months.slice(0,8),monthlyRecognized,'Valor reconhecido no mês (R$)','#d9b15b');
+}
+</script></body></html>
