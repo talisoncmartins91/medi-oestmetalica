@@ -1428,21 +1428,6 @@ body.sidebar-v10-open .exec-brand-text{
 .maquete-legend-item{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.045em;color:#cbd3d7}
 .maquete-legend-dot{width:13px;height:13px;border-radius:3px;border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 1px rgba(0,0,0,.18) inset}
 .maquete-legend-dot.yellow{background:#ffd400}.maquete-legend-dot.red{background:#ff2626}.maquete-legend-dot.green{background:#16d94f}
-.site-publish-card{margin-top:12px}
-.site-publish-row{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;align-items:stretch}
-.site-drop{display:flex;flex-direction:column;justify-content:center;gap:6px;min-height:96px;padding:14px;border:1px dashed #56636a;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02)}
-.site-drop:hover,.site-drop.dragover{border-color:#9fb0b8;background:rgba(255,255,255,.05)}
-.site-drop b{font-size:11.5px;color:#e3e9eb}.site-drop small{font-size:10px;color:#93a0a6;line-height:1.45}
-.site-drop.ready{border-style:solid;border-color:#2f8f57}
-.site-publish-side{display:flex;flex-direction:column;gap:6px}
-@media(max-width:900px){.site-publish-row{grid-template-columns:1fr}}
-.maquete-upload-msg{margin:0 0 12px;padding:9px 12px;border:1px solid #3a454b;border-radius:10px;font-size:10.5px;color:#cbd3d7;background:rgba(255,255,255,.03)}
-.maquete-upload-msg.ok{border-color:#1f7a45;color:#bff0cf}.maquete-upload-msg.err{border-color:#8a2b2b;color:#ffc9c9}
-.maquete-head-actions{display:flex;align-items:center;gap:6px}
-.maquete-photo-btn{border:1px solid #4a565d;background:transparent;color:#cbd3d7;border-radius:6px;padding:4px 7px;font-size:8.5px;font-weight:800;letter-spacing:.05em;cursor:pointer}
-.maquete-photo-btn:hover{border-color:#8fa0a8;color:#fff}.maquete-photo-btn.del:hover{border-color:#c43b3b;color:#ffb3b3}
-.maquete-grid.dragover{outline:2px dashed #8fa0a8;outline-offset:6px;border-radius:12px}
-.maquete-empty{grid-column:1/-1;padding:28px;text-align:center;border:1px dashed #46545c;border-radius:12px;font-size:11px;color:#9da8ad}
 @media(max-width:900px){.maquete-grid{grid-template-columns:1fr}.maquete-legend{justify-content:flex-start;gap:12px}}
 </style>
 
@@ -2347,6 +2332,7 @@ header{isolation:isolate!important}header:before{content:""!important;position:a
     <button class="exec-nav-btn active" type="button" data-go="peso"><span class="exec-nav-icon">◫</span><span class="exec-nav-label">Avanço físico</span></button>
     <button class="exec-nav-btn" type="button" data-go="tags"><span class="exec-nav-icon">⌘</span><span class="exec-nav-label">Detalhamento por TAGs</span></button>
     <button class="exec-nav-btn" type="button" data-go="excedentes"><span class="exec-nav-icon">▲</span><span class="exec-nav-label">Excedentes</span></button>
+    <button class="exec-nav-btn" type="button" data-go="pesoppu"><span class="exec-nav-icon">▦</span><span class="exec-nav-label">Peso por PPU</span></button>
     <button class="exec-nav-btn" type="button" data-go="cq"><span class="exec-nav-icon">▤</span><span class="exec-nav-label">Relatórios CQ</span></button>
     <button class="exec-nav-btn" type="button" data-go="maquete3d"><span class="exec-nav-icon">◇</span><span class="exec-nav-label">Avanço Visual Maquete 3D</span></button>
     <button class="exec-nav-btn" type="button" data-go="aditivo"><span class="exec-nav-icon">＋</span><span class="exec-nav-label">Aditivo</span></button>
@@ -2546,6 +2532,27 @@ header{isolation:isolate!important}header:before{content:""!important;position:a
 
 
 
+<section id="pesoppu" class="hidden">
+  <div class="top pp-top">
+    <div>
+      <div class="ey">PESO EXECUTADO</div>
+      <h1>Peso por PPU</h1>
+      <div class="sub">Todo o peso executado por item PPU em cada mês, somando base histórica e lançamentos online, sem separar o que está dentro do contrato do que é excedente.</div>
+    </div>
+    <div class="filters pp-filters">
+      <label class="pp-f"><span>Item PPU</span><select id="ppPpu" class="sel"></select></label>
+      <label class="pp-f"><span>Exibir</span><select id="ppMode" class="sel"><option value="m">Peso do mês</option><option value="a">Acumulado</option></select></label>
+      <button id="ppXlsx" class="action-btn export" type="button">EXPORTAR EXCEL</button>
+      <button id="ppPrint" class="action-btn" type="button">IMPRIMIR / PDF</button>
+    </div>
+  </div>
+  <div class="pp-print-head" aria-hidden="true"><b>STEEL STRUCTURE · Peso executado por PPU</b><span id="ppPrintMeta"></span></div>
+  <div id="ppKpis" class="pp-kpis"></div>
+  <div class="card tableCard pp-card"><div class="tableTitle pp-tt">PESO EXECUTADO POR PPU × MÊS<span id="ppNote"></span></div><div class="tableWrap"><table class="pp-tbl" id="ppTable"></table></div></div>
+  <div class="card tableCard pp-card"><div class="tableTitle pp-tt">EXECUTADO POR MÊS<span>barras empilhadas por item PPU</span></div><div class="pp-chart"><canvas id="ppChart"></canvas></div></div>
+  <div class="pp-rule"><b>Regra:</b> soma direta de todos os lançamentos de peso (base histórica + online) por item PPU e mês. Diferente do Avanço físico e da medição, aqui não há trava de contrato: o excedente também entra no total.</div>
+</section>
+
 <section id="cq" class="hidden">
   <div class="top">
     <div>
@@ -2617,12 +2624,11 @@ header{isolation:isolate!important}header:before{content:""!important;position:a
 <section id="maquete3d" class="hidden">
   <div class="top">
     <div><div class="ey">ACOMPANHAMENTO VISUAL</div><h1>Avanço Visual Maquete 3D</h1></div>
-    <div class="maquete-toolbar"><button id="uploadMaqueteBtn" class="action-btn maquete-adm-only" type="button" hidden>ENVIAR FOTOS</button><input id="uploadMaqueteInput" type="file" accept="image/*" multiple hidden><button id="refreshMaqueteImages" class="action-btn" type="button">ATUALIZAR IMAGENS</button></div>
+    <div class="maquete-toolbar"><button id="refreshMaqueteImages" class="action-btn" type="button">ATUALIZAR IMAGENS</button></div>
   </div>
   <div class="maquete-week-banner" id="maqueteWeekBanner"><strong id="maqueteWeekLabel">SEMANA 63</strong><span id="maqueteWeekDates">07/09/2026 A 13/09/2026</span></div>
-  <div class="maquete-upload-msg" id="maqueteUploadMsg" hidden></div>
   <div class="maquete-update-stamp" id="maqueteUpdateStamp"><i></i><span>IMAGENS ATUALIZADAS:</span><b id="maqueteUpdateValue">VERIFICANDO...</b></div>
-  <div class="maquete-grid" id="maqueteGrid">
+  <div class="maquete-grid">
     <article class="card maquete-card">
       <div class="maquete-head"><b>VISTA NORTE - SUL.jpg</b><span>MAQUETE 3D</span></div>
       <div class="maquete-image-wrap"><img class="maquete-live-img" data-src="VISTA NORTE - SUL.jpg" src="VISTA NORTE - SUL.jpg" alt="VISTA NORTE - SUL.jpg"></div>
@@ -2905,25 +2911,6 @@ header{isolation:isolate!important}header:before{content:""!important;position:a
           </section>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="cloud-box adm-entry-card site-publish-card" id="sitePublishCard">
-    <div class="adm-entry-head"><h3>ATUALIZAR O SITE (INDEX.HTML)</h3><span id="siteVersionInfo">VERSÃO ATUAL: —</span></div>
-    <div class="adm-entry-body">
-      <div class="site-publish-row">
-        <label class="site-drop" id="siteDrop">
-          <input id="siteFileInput" type="file" accept=".html,text/html" hidden>
-          <b id="siteFileName">Escolha ou arraste o novo index.html</b>
-          <small id="siteFileInfo">O arquivo é publicado no GitHub e entra no ar em cerca de 1 minuto.</small>
-        </label>
-        <div class="site-publish-side">
-          <label class="field-label">Descrição da alteração</label>
-          <input id="siteCommitMsg" class="cloud-input" placeholder="Ex.: fotos da maquete pelo site">
-          <div class="cloud-actions"><button id="sitePublishBtn" class="cloud-btn primary" type="button" disabled>PUBLICAR SITE</button><button id="siteClearBtn" class="cloud-btn" type="button">LIMPAR</button></div>
-        </div>
-      </div>
-      <div id="sitePublishMsg" class="cloud-message"></div>
     </div>
   </div>
 </div>
@@ -5379,13 +5366,14 @@ function renderFin(){
    });
    updateMaqueteImageTimestamp();
  }
- // Galeria, atualização e data/hora agora ficam no bloco FOTOS DA MAQUETE NO R2 (fim do arquivo).
+ updateMaqueteImageTimestamp();
+ const refreshMaqueteBtn=document.getElementById('refreshMaqueteImages');
+ if(refreshMaqueteBtn)refreshMaqueteBtn.addEventListener('click',refreshMaqueteImages);
  const maqueteModal=document.getElementById('maqueteModal'),maqueteModalImg=document.getElementById('maqueteModalImg');
- document.addEventListener('click',e=>{
-   const w=e.target.closest&&e.target.closest('.maquete-image-wrap');if(!w)return;
+ document.querySelectorAll('.maquete-image-wrap').forEach(w=>w.addEventListener('click',()=>{
    const img=w.querySelector('img');if(!img||!maqueteModal||!maqueteModalImg)return;
    maqueteModalImg.src=img.src;maqueteModal.classList.add('open');maqueteModal.setAttribute('aria-hidden','false');
- });
+ }));
  const closeMaquete=()=>{if(maqueteModal){maqueteModal.classList.remove('open');maqueteModal.setAttribute('aria-hidden','true')}};
  const closeMaqueteBtn=document.getElementById('closeMaqueteModal');if(closeMaqueteBtn)closeMaqueteBtn.addEventListener('click',closeMaquete);
  if(maqueteModal)maqueteModal.addEventListener('click',e=>{if(e.target===maqueteModal)closeMaquete()});
@@ -8487,196 +8475,186 @@ html body main.wrap .v93-read .ok{color:var(--c-green)!important}
   setTimeout(window.renderExcess,600);
 })();
 </script>
-
-<script>
-/* ===== FOTOS DA MAQUETE NO R2 — envio direto pelo site (ADM) =====
-   Leitura pública: GET  /api/maquete/fotos            -> lista
-                    GET  /api/maquete/foto?key=...      -> imagem
-   Edição (token):  POST /api/maquete/fotos?nome=...    -> envia/substitui (corpo = imagem)
-                    DELETE /api/maquete/fotos?key=...   -> exclui
-   Enviar uma foto com o MESMO NOME substitui a anterior (ex.: VISTA NORTE - SUL.jpg). */
+<style id="pp-style">
+#pesoppu .pp-top{align-items:flex-end;gap:18px}
+#pesoppu .pp-filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;justify-content:flex-end}
+#pesoppu .pp-f{display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:700;letter-spacing:.06em;color:#6b767d;text-transform:uppercase}
+#pesoppu .pp-f .sel{min-width:180px}
+#pesoppu .pp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+#pesoppu .pp-kpi{background:#fff;border:1px solid #DDE3E7;border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(16,29,37,.05)}
+#pesoppu .pp-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ppc,#1E4A66)}
+#pesoppu .pp-kpi small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:#6b767d;text-transform:uppercase}
+#pesoppu .pp-kpi b{display:block;font-size:26px;font-weight:700;color:#16212B;margin-top:6px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pesoppu .pp-kpi em{display:block;font-style:normal;font-size:12px;color:#5E6B74;margin-top:3px}
+#pesoppu .pp-kpi.ok{--ppc:#2C7A58}#pesoppu .pp-kpi.amb{--ppc:#C88743}
+#pesoppu .pp-card{margin-top:14px}
+#pesoppu .pp-tt{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+#pesoppu .pp-tt span{font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:#6b767d}
+#pesoppu table.pp-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+#pesoppu .pp-tbl th{background:#F3F5F7;color:#4F5B63;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:1px solid #DDE3E7;white-space:nowrap}
+#pesoppu .pp-tbl td{padding:9px 12px;border-bottom:1px solid #EDF0F2;color:#1E2A33;white-space:nowrap;background:transparent}
+#pesoppu .pp-tbl .r{text-align:right;font-variant-numeric:tabular-nums}
+#pesoppu .pp-tbl .z{color:#A3ADB4!important}
+#pesoppu .pp-tbl td small{display:block;color:#7A858C;font-size:11px;font-weight:400}
+#pesoppu .pp-tbl th:first-child,#pesoppu .pp-tbl td:first-child{position:sticky;left:0;z-index:1;background:#fff;box-shadow:1px 0 0 #EDF0F2}
+#pesoppu .pp-tbl th:first-child{background:#F3F5F7}
+#pesoppu .pp-tbl .totc{background:#F7F9FA;font-weight:700}
+#pesoppu .pp-tbl tr.tot td{background:#F3F5F7;font-weight:700;border-top:1px solid #C9D2D8;color:#16212B}
+#pesoppu .pp-tbl tr.tot td:first-child{background:#F3F5F7}
+#pesoppu .pp-tbl tr.out td:first-child b{color:#8A5A10}
+#pesoppu .pp-share{height:5px;border-radius:3px;background:#EDF0F2;overflow:hidden;min-width:60px;margin-top:4px}
+#pesoppu .pp-share i{display:block;height:100%;background:#1E4A66}
+#pesoppu .pp-empty{padding:26px;text-align:center;color:#6b767d}
+#pesoppu .pp-chart{position:relative;height:320px;padding:12px 16px 16px}
+#pesoppu .pp-rule{margin:14px 0 4px;font-size:12px;color:#5E6B74;line-height:1.5}
+#pesoppu .pp-print-head{display:none}
+@media (max-width:1100px){#pesoppu .pp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){#pesoppu .pp-kpis{grid-template-columns:1fr}#pesoppu .pp-chart{height:260px}}
+@media print{
+  body.pp-printing *{visibility:hidden}
+  body.pp-printing #pesoppu,body.pp-printing #pesoppu *{visibility:visible}
+  body.pp-printing #pesoppu{position:absolute;left:0;top:0;width:100%;padding:0 6mm;background:#fff}
+  body.pp-printing #pesoppu .pp-filters,body.pp-printing .collapse-table-btn{display:none!important}
+  body.pp-printing #pesoppu .pp-print-head{display:flex!important;justify-content:space-between;font-size:11px;color:#333;border-bottom:1px solid #999;padding-bottom:6px;margin-bottom:8px}
+  body.pp-printing #pesoppu .tableWrap{max-height:none!important;overflow:visible!important}
+  body.pp-printing #pesoppu .pp-kpi,body.pp-printing #pesoppu .card{box-shadow:none;break-inside:avoid}
+  @page{size:A4 landscape;margin:10mm}
+}
+</style>
+<script id="pp-script">
+/* Peso por PPU: todo o peso executado (base histórica + online) por item PPU e mês, sem separar contrato de excedente */
 (function(){
- const grid=document.getElementById('maqueteGrid');if(!grid)return;
- const btn=document.getElementById('uploadMaqueteBtn'),input=document.getElementById('uploadMaqueteInput');
- const msgEl=document.getElementById('maqueteUploadMsg'),stampEl=document.getElementById('maqueteUpdateValue');
- const STATIC_HTML=grid.innerHTML; // fallback: imagens antigas do GitHub
- let fotos=[],usingCloud=false,busy=false;
- const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const isAdm=()=>!!(typeof cloudToken!=='undefined'&&cloudToken);
- function msg(t,type=''){if(!msgEl)return;msgEl.hidden=!t;msgEl.textContent=t||'';msgEl.className='maquete-upload-msg'+(type?' '+type:'')}
- function fotoUrl(f){return API_BASE+'/api/maquete/foto?key='+encodeURIComponent(f.key)+'&v='+encodeURIComponent(f.uploaded||'')}
- function stamp(date){
-   if(!stampEl)return;
-   if(!date||isNaN(date)){stampEl.textContent='SEM FOTOS ENVIADAS';return}
-   const d=date.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
-   const h=date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',hour12:false});
-   stampEl.textContent=d+'  HORÁRIO: '+h+'h';
- }
- function syncAdm(){
-   const adm=isAdm();
-   if(btn)btn.hidden=!adm;
-   grid.querySelectorAll('.maquete-adm-only').forEach(el=>el.hidden=!adm);
- }
- function render(){
-   if(!usingCloud){
-     grid.innerHTML=STATIC_HTML;
-     (async()=>{let latest=null;for(const img of grid.querySelectorAll('img')){try{const src=img.dataset.src||img.getAttribute('src');const r=await fetch(src+'?meta='+Date.now(),{method:'HEAD',cache:'no-store'});const d=new Date(r.headers.get('last-modified'));if(!isNaN(d)&&(!latest||d>latest))latest=d}catch(e){}}stamp(latest)})();
-     syncAdm();return;
-   }
-   if(!fotos.length){
-     grid.innerHTML='<div class="maquete-empty">Nenhuma foto enviada ainda.'+(isAdm()?' Use ENVIAR FOTOS ou arraste as imagens para cá.':'')+'</div>';
-     stamp(null);syncAdm();return;
-   }
-   grid.innerHTML=fotos.map(f=>`<article class="card maquete-card">
-     <div class="maquete-head"><b>${esc(f.nome)}</b><span class="maquete-head-actions">
-       <button class="maquete-photo-btn maquete-adm-only" type="button" data-foto-replace="${esc(f.nome)}" hidden>SUBSTITUIR</button>
-       <button class="maquete-photo-btn del maquete-adm-only" type="button" data-foto-del="${esc(f.key)}" data-nome="${esc(f.nome)}" hidden>EXCLUIR</button>
-       <span>MAQUETE 3D</span></span></div>
-     <div class="maquete-image-wrap"><img loading="lazy" src="${fotoUrl(f)}" alt="${esc(f.nome)}"></div>
-   </article>`).join('');
-   const latest=fotos.map(f=>new Date(f.uploaded)).filter(d=>!isNaN(d)).sort((a,b)=>b-a)[0];
-   stamp(latest);syncAdm();
- }
- async function load(){
-   try{
-     const data=await apiRequest('/api/maquete/fotos');
-     const list=Array.isArray(data)?data:(data?.fotos||[]);
-     fotos=list.sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR',{numeric:true}));
-     // Enquanto nada foi enviado ao R2, continua mostrando as imagens antigas do GitHub.
-     usingCloud=fotos.length>0||isAdm();
-   }catch(e){
-     console.warn('Fotos da maquete (R2):',e);usingCloud=false;
-   }
-   render();
- }
- // Reduz e converte para JPG antes de enviar (lado maior até 3000 px).
- async function prepare(file){
-   const MAX=3000;
-   try{
-     const bmp=await createImageBitmap(file);
-     const k=Math.min(1,MAX/Math.max(bmp.width,bmp.height));
-     const c=document.createElement('canvas');c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
-     const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(bmp,0,0,c.width,c.height);
-     const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.88));
-     if(blob)return blob;
-   }catch(e){console.warn('Compressão falhou, enviando original',e)}
-   return file;
- }
- function nomeFinal(file,forced){
-   const base=(forced||file.name||'FOTO').replace(/\.[^.]+$/,'').trim()||'FOTO';
-   return base.toUpperCase()+'.jpg';
- }
- async function upload(files,forcedName){
-   if(busy)return;
-   if(!isAdm()){msg('Entre online como ADM para enviar fotos.','err');return}
-   files=[...files].filter(f=>/^image\//.test(f.type));
-   if(!files.length){msg('Selecione arquivos de imagem (JPG ou PNG).','err');return}
-   busy=true;if(btn){btn.disabled=true}
-   let ok=0,fail=[];
-   for(let i=0;i<files.length;i++){
-     const f=files[i],nome=nomeFinal(f,files.length===1?forcedName:null);
-     msg(`Enviando ${i+1} de ${files.length}: ${nome}...`);
-     try{
-       const blob=await prepare(f);
-       await apiRequest('/api/maquete/fotos?nome='+encodeURIComponent(nome),{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob},true);
-       ok++;
-     }catch(e){fail.push(nome+' ('+(e.message||e)+')')}
-   }
-   busy=false;if(btn){btn.disabled=false}
-   await load();
-   if(fail.length)msg(`${ok} foto(s) enviada(s). Falharam: ${fail.join('; ')}`,'err');
-   else msg(`${ok} foto(s) enviada(s). Fotos com o mesmo nome foram substituídas.`,'ok');
- }
- async function remove(key,nome){
-   if(!isAdm())return;
-   if(!confirm(`Excluir a foto "${nome}" do painel?`))return;
-   try{
-     await apiRequest('/api/maquete/fotos?key='+encodeURIComponent(key),{method:'DELETE'},true);
-     msg(`Foto "${nome}" excluída.`,'ok');
-   }catch(e){msg('Não foi possível excluir: '+(e.message||e),'err')}
-   load();
- }
- let replaceName=null;
- if(btn)btn.addEventListener('click',()=>{replaceName=null;input.multiple=true;input.click()});
- if(input)input.addEventListener('change',()=>{const fs=input.files;if(fs&&fs.length)upload(fs,replaceName);input.value='';replaceName=null});
- grid.addEventListener('click',e=>{
-   const rb=e.target.closest('[data-foto-replace]');
-   if(rb){e.stopPropagation();replaceName=rb.dataset.fotoReplace;input.multiple=false;input.click();return}
-   const db=e.target.closest('[data-foto-del]');
-   if(db){e.stopPropagation();remove(db.dataset.fotoDel,db.dataset.nome)}
- },true);
- // Arrastar e soltar (somente ADM)
- ['dragenter','dragover'].forEach(ev=>grid.addEventListener(ev,e=>{if(!isAdm())return;e.preventDefault();grid.classList.add('dragover')}));
- ['dragleave','drop'].forEach(ev=>grid.addEventListener(ev,e=>{if(!isAdm())return;e.preventDefault();grid.classList.remove('dragover')}));
- grid.addEventListener('drop',e=>{if(!isAdm())return;const fs=e.dataTransfer?.files;if(fs&&fs.length)upload(fs)});
- const refreshBtn=document.getElementById('refreshMaqueteImages');
- if(refreshBtn)refreshBtn.addEventListener('click',()=>{msg('');load()});
- // Reage a login/logout do ADM
- let lastAdm=isAdm();
- setInterval(()=>{const a=isAdm();if(a!==lastAdm){lastAdm=a;load()}},1500);
- load();
-})();
-</script>
+  const $=id=>document.getElementById(id);
+  const nf=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const kg=v=>nf.format(Math.abs(v)<0.005?0:v)+' kg', num=v=>nf.format(Math.abs(v)<0.005?0:v);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const cap1=s=>{s=String(s||'').toLowerCase();return s.charAt(0).toUpperCase()+s.slice(1)};
+  const U=v=>String(v||'').trim().toUpperCase();
+  const MONTHS=()=>(typeof D!=='undefined'&&D.months)||[];
+  const mIdx=m=>{const i=MONTHS().indexOf(U(m));return i<0?999:i};
+  const ITEMS=()=>(typeof D!=='undefined'&&D.items)||{};
+  const desc=k=>(ITEMS()[k]&&ITEMS()[k].desc)||'';
+  const ppuKey=v=>{const raw=String(v||'').trim();if(ITEMS()[raw])return raw;try{const n=normalizePpu(raw);if(ITEMS()[n])return n}catch(e){}return raw.toUpperCase()};
+  const cmpPpu=(a,b)=>a.localeCompare(b,'pt-BR',{numeric:true});
+  let selP='',mode='m',chart=null,dirty=true;
 
-<script>
-/* ===== ATUALIZAR O SITE PELO PRÓPRIO SITE (ADM) =====
-   GET  /api/site/info   -> último commit do index.html
-   POST /api/site/index  -> publica o index.html no GitHub (corpo = HTML) */
-(function(){
- const fileIn=document.getElementById('siteFileInput');if(!fileIn)return;
- const drop=document.getElementById('siteDrop'),nameEl=document.getElementById('siteFileName'),infoEl=document.getElementById('siteFileInfo');
- const btn=document.getElementById('sitePublishBtn'),clearBtn=document.getElementById('siteClearBtn');
- const msgIn=document.getElementById('siteCommitMsg'),out=document.getElementById('sitePublishMsg'),ver=document.getElementById('siteVersionInfo');
- const DEFAULT_INFO=infoEl.textContent;
- let pending=null;
- const isAdm=()=>!!(typeof cloudToken!=='undefined'&&cloudToken);
- const say=(t,type='')=>{out.textContent=t;out.className='cloud-message'+(type?' '+type:'')};
- const kb=n=>(n/1024).toLocaleString('pt-BR',{maximumFractionDigits:0})+' KB';
- async function loadInfo(){
-   try{
-     const d=await apiRequest('/api/site/info');
-     if(d?.date){const dt=new Date(d.date);ver.textContent='VERSÃO ATUAL: '+dt.toLocaleDateString('pt-BR')+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});ver.title=d.message||''}
-   }catch(e){ver.textContent='VERSÃO ATUAL: —'}
- }
- function reset(){pending=null;fileIn.value='';drop.classList.remove('ready');nameEl.textContent='Escolha ou arraste o novo index.html';infoEl.textContent=DEFAULT_INFO;btn.disabled=true}
- async function pick(file){
-   if(!file)return;
-   if(!/\.html?$/i.test(file.name)){say('Escolha um arquivo .html.','err');return}
-   const text=await file.text();
-   // Proteção contra subir o arquivo errado
-   const problems=[];
-   if(!/<html[\s>]/i.test(text)||!/<\/html>/i.test(text))problems.push('não parece um HTML completo');
-   if(!text.includes('steel-structure-api'))problems.push('não contém o endereço da API do Steel Structure');
-   if(!text.includes('id="maquete3d"'))problems.push('não contém a seção Avanço Visual');
-   if(text.length<100000)problems.push('é muito menor que o site atual ('+kb(text.length)+')');
-   if(problems.length){say('Arquivo recusado: '+problems.join('; ')+'. Confira se é o index.html deste painel.','err');reset();return}
-   pending=text;drop.classList.add('ready');
-   nameEl.textContent=file.name;
-   infoEl.textContent=kb(file.size)+' • modificado em '+new Date(file.lastModified).toLocaleString('pt-BR');
-   btn.disabled=!isAdm();
-   say(isAdm()?'Arquivo conferido. Clique em PUBLICAR SITE.':'Entre online como ADM para publicar.',isAdm()?'ok':'err');
- }
- async function publish(){
-   if(!pending)return;
-   if(!isAdm()){say('Entre online como ADM para publicar.','err');return}
-   if(!confirm('Publicar este index.html? O site atual será substituído (a versão anterior fica no histórico do GitHub).'))return;
-   btn.disabled=true;const old=btn.textContent;btn.textContent='PUBLICANDO...';
-   try{
-     const m=(msgIn.value||'').trim()||'Atualização pelo painel';
-     const d=await apiRequest('/api/site/index?msg='+encodeURIComponent(m),{method:'POST',headers:{'Content-Type':'text/html;charset=UTF-8'},body:pending},true);
-     say('Site publicado'+(d?.commit?' (commit '+String(d.commit).slice(0,7)+')':'')+'. Em cerca de 1 minuto, recarregue a página com Ctrl+F5.','ok');
-     msgIn.value='';reset();loadInfo();
-   }catch(e){say('Não foi possível publicar: '+(e.message||e),'err');btn.disabled=false}
-   finally{btn.textContent=old}
- }
- fileIn.addEventListener('change',()=>pick(fileIn.files[0]));
- ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('dragover')}));
- ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('dragover')}));
- drop.addEventListener('drop',e=>pick(e.dataTransfer?.files?.[0]));
- btn.addEventListener('click',publish);
- clearBtn.addEventListener('click',()=>{reset();say('')});
- setInterval(()=>{if(pending)btn.disabled=!isAdm()},1500);
- loadInfo();
+  function entries(){
+    const all=[];
+    (typeof STATIC_WEIGHT_ROWS!=='undefined'?STATIC_WEIGHT_ROWS:[]).forEach(r=>all.push({month:U(r[0]),ppu:ppuKey(r[2]),kg:Number(r[3])||0}));
+    (typeof CLOUD_MEASUREMENTS!=='undefined'?CLOUD_MEASUREMENTS:[]).forEach(r=>all.push({month:U(r.month),ppu:ppuKey(r.item_ppu),kg:Number(r.kg)||0}));
+    return all.filter(e=>e.month&&e.ppu&&e.kg>0);
+  }
+  function build(){
+    const E=entries();
+    const months=[...new Set(E.map(e=>e.month))].sort((a,b)=>mIdx(a)-mIdx(b));
+    {const ix=months.map(mIdx).filter(i=>i<999);if(ix.length){const a=Math.min(...ix),b=Math.max(...ix);const fill=MONTHS().slice(a,b+1);months.filter(m=>mIdx(m)===999).forEach(m=>fill.push(m));months.splice(0,months.length,...fill)}}
+    const ppus=[...new Set(E.map(e=>e.ppu))].sort(cmpPpu);
+    const M={};ppus.forEach(p=>{M[p]={};months.forEach(m=>M[p][m]=0)});
+    E.forEach(e=>{M[e.ppu][e.month]+=e.kg});
+    return {months,ppus,M};
+  }
+  function fillFilter(ppus){
+    const p=$('ppPpu');if(!p)return;
+    if(selP&&!ppus.includes(selP))selP='';
+    p.innerHTML='<option value="">Todos os itens</option>'+ppus.map(k=>`<option value="${esc(k)}"${k===selP?' selected':''}>${esc(k)}${desc(k)?' · '+esc(cap1(desc(k))):''}</option>`).join('');
+  }
+  function view(){
+    const {months,ppus,M}=build();
+    const ks=ppus.filter(k=>!selP||k===selP);
+    // valor exibido na célula: do mês ou acumulado até o mês
+    const cell={};
+    ks.forEach(k=>{let acc=0;cell[k]={};months.forEach(m=>{acc+=M[k][m];cell[k][m]=mode==='a'?acc:M[k][m]})});
+    const rowTot=k=>months.reduce((s,m)=>s+M[k][m],0);
+    const colTot=m=>ks.reduce((s,k)=>s+cell[k][m],0);
+    const grand=ks.reduce((s,k)=>s+rowTot(k),0);
+    return {months,ppus,ks,M,cell,rowTot,colTot,grand};
+  }
+  function render(){
+    if(!$('ppTable')||typeof D==='undefined')return;
+    const sec=$('pesoppu');if(sec&&sec.classList.contains('hidden')){dirty=true;return}
+    dirty=false;
+    const {months,ppus,ks,M,cell,rowTot,colTot,grand}=view();
+    fillFilter(ppus);
+    // ----- KPIs
+    const perMonth=months.map(m=>({m,v:ks.reduce((s,k)=>s+M[k][m],0)}));
+    const best=perMonth.reduce((a,b)=>b.v>a.v?b:a,{m:'',v:0});
+    const withV=perMonth.filter(x=>x.v>0.005),last=withV.length?withV[withV.length-1]:{m:'',v:0};
+    const kp=[
+      {c:'',l:'Peso executado total',v:kg(grand),s:selP?`item ${selP}`:'todos os itens PPU, inclusive excedente'},
+      {c:'ok',l:last.m?`Executado em ${cap1(last.m)}`:'Último mês',v:kg(last.v),s:'último mês com lançamento'},
+      {c:'amb',l:'Mês de maior execução',v:best.m?cap1(best.m):'—',s:best.m?kg(best.v):'sem lançamentos'},
+      {c:'',l:'Itens PPU com execução',v:String(ks.filter(k=>rowTot(k)>0.005).length),s:`${perMonth.filter(x=>x.v>0.005).length} ${perMonth.filter(x=>x.v>0.005).length===1?'mês':'meses'} com lançamento`}
+    ];
+    $('ppKpis').innerHTML=kp.map(x=>`<div class="pp-kpi ${x.c}"><small>${esc(x.l)}</small><b title="${esc(x.v)}">${esc(x.v)}</b><em>${esc(x.s)}</em></div>`).join('');
+    $('ppNote').textContent=mode==='a'?'cada mês mostra o acumulado até ele; a coluna Total é o executado de todos os meses':'peso lançado em cada mês; a coluna Total soma todos os meses';
+    // ----- Tabela PPU × mês
+    if(!ks.length||!months.length){$('ppTable').innerHTML='<tbody><tr><td class="pp-empty">Sem lançamentos de peso.</td></tr></tbody>';}
+    else{
+      $('ppTable').innerHTML=`<thead><tr><th>Item PPU</th>${months.map(m=>`<th class="r">${esc(cap1(m))}</th>`).join('')}<th class="r">Total</th><th class="r">% do total</th></tr></thead><tbody>
+        ${ks.map(k=>{const t=rowTot(k),sh=grand?t/grand:0,out=!ITEMS()[k];
+          return `<tr${out?' class="out"':''}><td><b>${esc(k)}</b><small>${out?'item não cadastrado no contrato':esc(cap1(desc(k)))}</small></td>
+          ${months.map(m=>{const v=cell[k][m];return `<td class="r${v>0.005?'':' z'}">${v>0.005?num(v):'—'}</td>`}).join('')}
+          <td class="r totc">${num(t)}</td><td class="r">${(sh*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%<div class="pp-share"><i style="width:${Math.min(100,sh*100)}%"></i></div></td></tr>`}).join('')}
+        ${ks.length>1?`<tr class="tot"><td>Total (kg)</td>${months.map(m=>`<td class="r">${num(colTot(m))}</td>`).join('')}<td class="r">${num(grand)}</td><td class="r">100,0%</td></tr>`:''}</tbody>`;
+    }
+    drawChart(months,ks,M);
+    const pm=$('ppPrintMeta');if(pm)pm.textContent=`Item: ${selP||'todos'} · Exibição: ${mode==='a'?'acumulado':'peso do mês'} · Emitido em ${new Date().toLocaleString('pt-BR')}`;
+  }
+  const PAL=['#1E4A66','#C88743','#2C7A58','#B4432B','#5B7FA3','#8A6BB0','#3E9AA6','#9C7A3C','#6B767D','#D19A6A','#4F8F6B','#A3485B'];
+  function drawChart(months,ks,M){
+    const cv=$('ppChart');if(!cv||typeof Chart==='undefined')return;
+    const datasets=ks.map((k,i)=>({label:k+(desc(k)?' · '+cap1(desc(k)):''),data:months.map(m=>+M[k][m].toFixed(2)),backgroundColor:PAL[i%PAL.length],borderRadius:3,maxBarThickness:46}));
+    const cfg={type:'bar',data:{labels:months.map(cap1),datasets},options:{responsive:true,maintainAspectRatio:false,animation:false,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>`${c.dataset.label}: ${kg(c.parsed.y)}`,footer:it=>'Total: '+kg(it.reduce((s,x)=>s+x.parsed.y,0))}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>nf.format(v)}}}}};
+    if(chart){chart.data=cfg.data;chart.update();}else{chart=new Chart(cv.getContext('2d'),cfg);}
+  }
+  // ----- Excel
+  function exportXlsx(){
+    const {months,ks,M,cell,rowTot,colTot,grand}=view();
+    const wb=XLSX.utils.book_new(),add=(n,a,w)=>{const ws=XLSX.utils.aoa_to_sheet(a);ws['!cols']=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,n)};
+    const head=['Item PPU','Descrição',...months.map(cap1),'Total (kg)'];
+    const mat=(getV,title)=>{const a=[[title],['Emitido em',new Date().toLocaleString('pt-BR')],['Item PPU',selP||'Todos'],[],head];
+      ks.forEach(k=>a.push([k,desc(k)||'Item não cadastrado no contrato',...months.map(m=>+getV(k,m).toFixed(2)),+rowTot(k).toFixed(2)]));
+      a.push(['Total','',...months.map(m=>+ks.reduce((s,k)=>s+getV(k,m),0).toFixed(2)),+grand.toFixed(2)]);return a};
+    const w=[12,32,...months.map(()=>14),16];
+    add('PESO_DO_MES',mat((k,m)=>M[k][m],'PESO EXECUTADO POR PPU E MÊS (kg) — inclui excedente'),w);
+    add('ACUMULADO',mat((k,m)=>{let s=0;for(const x of months){s+=M[k][x];if(x===m)break}return s},'PESO EXECUTADO ACUMULADO POR PPU (kg) — inclui excedente'),w);
+    XLSX.writeFile(wb,`Peso_por_PPU_${selP||'todos'}.xlsx`.replace(/\s+/g,'_'));
+  }
+  function withXlsx(fn,btn){
+    if(window.XLSX&&XLSX.utils)return fn();
+    const s=document.createElement('script');btn.disabled=true;
+    s.src='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+    s.onload=()=>{btn.disabled=false;fn()};s.onerror=()=>{btn.disabled=false;alert('Não foi possível carregar o gerador de Excel. Verifique a conexão e tente de novo.')};
+    document.head.appendChild(s);
+  }
+  // ----- navegação: mostra/esconde a seção junto com o menu lateral
+  function show(){
+    const sec=$('pesoppu');if(!sec)return;
+    document.querySelectorAll('main.wrap > section').forEach(s=>{if(s!==sec)s.classList.add('hidden')});
+    sec.classList.remove('hidden');
+    document.querySelectorAll('.exec-nav-btn[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go==='pesoppu'));
+    const t=$('execPageTitle');if(t)t.textContent='Peso por PPU';
+    render();
+  }
+  function bind(){
+    const p=$('ppPpu'),md=$('ppMode'),x=$('ppXlsx'),pr=$('ppPrint');if(!p)return;
+    p.onchange=()=>{selP=p.value;render()};md.onchange=()=>{mode=md.value;render()};
+    x.onclick=()=>withXlsx(exportXlsx,x);
+    pr.onclick=()=>{render();document.body.classList.add('pp-printing');setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove('pp-printing'),300)},50)};
+    window.addEventListener('afterprint',()=>document.body.classList.remove('pp-printing'));
+    document.addEventListener('click',e=>{
+      const b=e.target.closest('[data-go]');
+      if(b&&b.dataset.go==='pesoppu'){setTimeout(show,0);return}
+      if(b||e.target.closest('#tagsBackPeso,#excessBackPeso,.tab[data-tab]')){const sec=$('pesoppu');if(sec)sec.classList.add('hidden')}
+    });
+  }
+  window.renderPesoPpu=function(){try{render()}catch(e){console.warn('Peso por PPU',e)}};
+  bind();
+  // atualiza quando a nuvem sincroniza
+  if(typeof loadCloudData==='function'){const base=loadCloudData;window.loadCloudData=async function(){const r=await base.apply(this,arguments);window.renderPesoPpu();return r};try{loadCloudData=window.loadCloudData}catch(e){}}
+  setTimeout(window.renderPesoPpu,700);
 })();
 </script>
 </body>
