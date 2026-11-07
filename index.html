@@ -2537,10 +2537,12 @@ header{isolation:isolate!important}header:before{content:""!important;position:a
     <div>
       <div class="ey">PESO EXECUTADO</div>
       <h1>Peso por PPU</h1>
-      <div class="sub">Todo o peso executado por item PPU em cada mês, somando base histórica e lançamentos online, sem separar o que está dentro do contrato do que é excedente.</div>
+      <div class="sub">Todo o peso executado por item PPU e por estrutura (TAG) em cada mês, somando base histórica e lançamentos online, sem separar o que está dentro do contrato do que é excedente.</div>
     </div>
     <div class="filters pp-filters">
+      <label class="pp-f"><span>Agrupar por</span><select id="ppGroup" class="sel"><option value="ppu">Item PPU → estruturas</option><option value="tag">Estrutura (TAG) → itens PPU</option></select></label>
       <label class="pp-f"><span>Item PPU</span><select id="ppPpu" class="sel"></select></label>
+      <label class="pp-f"><span>Estrutura (TAG)</span><select id="ppTag" class="sel"></select></label>
       <label class="pp-f"><span>Exibir</span><select id="ppMode" class="sel"><option value="m">Peso do mês</option><option value="a">Acumulado</option></select></label>
       <button id="ppXlsx" class="action-btn export" type="button">EXPORTAR EXCEL</button>
       <button id="ppPrint" class="action-btn" type="button">IMPRIMIR / PDF</button>
@@ -2548,9 +2550,9 @@ header{isolation:isolate!important}header:before{content:""!important;position:a
   </div>
   <div class="pp-print-head" aria-hidden="true"><b>STEEL STRUCTURE · Peso executado por PPU</b><span id="ppPrintMeta"></span></div>
   <div id="ppKpis" class="pp-kpis"></div>
-  <div class="card tableCard pp-card"><div class="tableTitle pp-tt">PESO EXECUTADO POR PPU × MÊS<span id="ppNote"></span></div><div class="tableWrap"><table class="pp-tbl" id="ppTable"></table></div></div>
-  <div class="card tableCard pp-card"><div class="tableTitle pp-tt">EXECUTADO POR MÊS<span>barras empilhadas por item PPU</span></div><div class="pp-chart"><canvas id="ppChart"></canvas></div></div>
-  <div class="pp-rule"><b>Regra:</b> soma direta de todos os lançamentos de peso (base histórica + online) por item PPU e mês. Diferente do Avanço físico e da medição, aqui não há trava de contrato: o excedente também entra no total.</div>
+  <div class="card tableCard pp-card"><div class="tableTitle pp-tt"><span id="ppTitle" class="pp-ttl">PESO EXECUTADO POR PPU × MÊS</span><span id="ppNote"></span><button type="button" id="ppExpand" class="pp-exp">Recolher tudo</button></div><div class="tableWrap"><table class="pp-tbl" id="ppTable"></table></div></div>
+  <div class="card tableCard pp-card"><div class="tableTitle pp-tt">EXECUTADO POR MÊS<span id="ppChartNote">barras empilhadas por item PPU</span></div><div class="pp-chart"><canvas id="ppChart"></canvas></div></div>
+  <div class="pp-rule"><b>Regra:</b> soma direta de todos os lançamentos de peso (base histórica + online) por item PPU, estrutura (TAG) e mês. Diferente do Avanço físico e da medição, aqui não há trava de contrato: o excedente também entra no total.</div>
 </section>
 
 <section id="cq" class="hidden">
@@ -8537,9 +8539,24 @@ html body main.wrap .v93-read .ok{color:var(--c-green)!important}
   body.pp-printing #pesoppu .pp-kpi,body.pp-printing #pesoppu .card{box-shadow:none;break-inside:avoid}
   @page{size:A4 landscape;margin:10mm}
 }
+
+#pesoppu .pp-tt .pp-ttl{font-size:inherit!important;font-weight:inherit!important;letter-spacing:inherit!important;text-transform:inherit!important;color:inherit!important}
+#pesoppu .pp-exp{margin-left:auto;border:1px solid #C9D2D8;background:#fff;color:#1E2A33;font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;cursor:pointer}
+#pesoppu tr.pp-g{cursor:pointer}
+#pesoppu tr.pp-g:hover td{background:#F7FAFC}
+#pesoppu tr.pp-g.open td{background:#F3F7FA}
+#pesoppu .pp-tog{border:0;background:#E7EEF3;color:#1E4A66;width:22px;height:22px;border-radius:6px;font-size:12px;cursor:pointer;margin-right:8px;vertical-align:top;flex:none}
+#pesoppu .pp-cw{display:flex;align-items:flex-start}
+#pesoppu .pp-lbl{display:inline-block}
+#pesoppu .pp-cnt{color:#1E4A66!important;font-weight:600}
+#pesoppu tr.pp-sub td{font-size:12px;color:#3F4B53;background:#FBFCFD}
+#pesoppu tr.pp-sub td:first-child{padding-left:46px!important;background:#FBFCFD}
+#pesoppu tr.pp-sub td:first-child .pp-lbl{border-left:2px solid #C9D7E1;padding-left:9px}
+#pesoppu .pp-of{color:#6b767d;font-size:11.5px}
+@media (max-width:900px){#pesoppu .pp-filters{grid-template-columns:1fr 1fr!important}html body #pesoppu table.pp-tbl tr.pp-sub td:first-child{padding-left:12px!important}#pesoppu .pp-tog{width:28px;height:28px;margin-right:6px}html body #pesoppu table.pp-tbl td:first-child,html body #pesoppu table.pp-tbl th:first-child{width:138px!important;min-width:138px!important;max-width:138px!important;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere}html body #pesoppu table.pp-tbl tr.pp-sub td:first-child{font-size:11.5px!important;letter-spacing:-.01em}html body #pesoppu table.pp-tbl td,html body #pesoppu table.pp-tbl th{white-space:nowrap}#pesoppu .pp-exp{margin-left:0}}
 </style>
 <script id="pp-script">
-/* Peso por PPU: todo o peso executado (base histórica + online) por item PPU e mês, sem separar contrato de excedente */
+/* Peso por PPU: todo o peso executado (base histórica + online) por item PPU, por estrutura (TAG) e por mês, sem separar contrato de excedente */
 (function(){
   const $=id=>document.getElementById(id);
   const nf=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -8553,91 +8570,112 @@ html body main.wrap .v93-read .ok{color:var(--c-green)!important}
   const desc=k=>(ITEMS()[k]&&ITEMS()[k].desc)||'';
   const ppuKey=v=>{const raw=String(v||'').trim();if(ITEMS()[raw])return raw;try{const n=normalizePpu(raw);if(ITEMS()[n])return n}catch(e){}return raw.toUpperCase()};
   const cmpPpu=(a,b)=>a.localeCompare(b,'pt-BR',{numeric:true});
-  let selP='',mode='m',chart=null,dirty=true;
+  const SEM='(SEM TAG)';
+  let selP='',selT='',mode='m',group='ppu',chart=null;
+  const open=new Set(),closed=new Set();let allOpen=true;
 
   function entries(){
     const all=[];
-    (typeof STATIC_WEIGHT_ROWS!=='undefined'?STATIC_WEIGHT_ROWS:[]).forEach(r=>all.push({month:U(r[0]),ppu:ppuKey(r[2]),kg:Number(r[3])||0}));
-    (typeof CLOUD_MEASUREMENTS!=='undefined'?CLOUD_MEASUREMENTS:[]).forEach(r=>all.push({month:U(r.month),ppu:ppuKey(r.item_ppu),kg:Number(r.kg)||0}));
+    (typeof STATIC_WEIGHT_ROWS!=='undefined'?STATIC_WEIGHT_ROWS:[]).forEach(r=>all.push({month:U(r[0]),tag:U(r[1])||SEM,ppu:ppuKey(r[2]),kg:Number(r[3])||0}));
+    (typeof CLOUD_MEASUREMENTS!=='undefined'?CLOUD_MEASUREMENTS:[]).forEach(r=>all.push({month:U(r.month),tag:U(r.tag)||SEM,ppu:ppuKey(r.item_ppu),kg:Number(r.kg)||0}));
     return all.filter(e=>e.month&&e.ppu&&e.kg>0);
   }
-  function build(){
-    const E=entries();
+  function monthsOf(E){
     const months=[...new Set(E.map(e=>e.month))].sort((a,b)=>mIdx(a)-mIdx(b));
-    {const ix=months.map(mIdx).filter(i=>i<999);if(ix.length){const a=Math.min(...ix),b=Math.max(...ix);const fill=MONTHS().slice(a,b+1);months.filter(m=>mIdx(m)===999).forEach(m=>fill.push(m));months.splice(0,months.length,...fill)}}
-    const ppus=[...new Set(E.map(e=>e.ppu))].sort(cmpPpu);
-    const M={};ppus.forEach(p=>{M[p]={};months.forEach(m=>M[p][m]=0)});
-    E.forEach(e=>{M[e.ppu][e.month]+=e.kg});
-    return {months,ppus,M};
+    const ix=months.map(mIdx).filter(i=>i<999);
+    if(ix.length){const a=Math.min(...ix),b=Math.max(...ix);const fill=MONTHS().slice(a,b+1);months.filter(m=>mIdx(m)===999).forEach(m=>fill.push(m));return fill}
+    return months;
   }
-  function fillFilter(ppus){
-    const p=$('ppPpu');if(!p)return;
-    if(selP&&!ppus.includes(selP))selP='';
-    p.innerHTML='<option value="">Todos os itens</option>'+ppus.map(k=>`<option value="${esc(k)}"${k===selP?' selected':''}>${esc(k)}${desc(k)?' · '+esc(cap1(desc(k))):''}</option>`).join('');
-  }
+  const zero=months=>Object.fromEntries(months.map(m=>[m,0]));
+  // monta grupos: chave principal (PPU ou TAG) e, dentro dela, a outra dimensão
   function view(){
-    const {months,ppus,M}=build();
-    const ks=ppus.filter(k=>!selP||k===selP);
-    // valor exibido na célula: do mês ou acumulado até o mês
-    const cell={};
-    ks.forEach(k=>{let acc=0;cell[k]={};months.forEach(m=>{acc+=M[k][m];cell[k][m]=mode==='a'?acc:M[k][m]})});
-    const rowTot=k=>months.reduce((s,m)=>s+M[k][m],0);
-    const colTot=m=>ks.reduce((s,k)=>s+cell[k][m],0);
-    const grand=ks.reduce((s,k)=>s+rowTot(k),0);
-    return {months,ppus,ks,M,cell,rowTot,colTot,grand};
+    const ALL=entries();
+    const allPpus=[...new Set(ALL.map(e=>e.ppu))].sort(cmpPpu), allTags=[...new Set(ALL.map(e=>e.tag))].sort((a,b)=>a===SEM?1:b===SEM?-1:a.localeCompare(b,'pt-BR'));
+    const E=ALL.filter(e=>(!selP||e.ppu===selP)&&(!selT||e.tag===selT));
+    const months=monthsOf(ALL);
+    const k1=group==='tag'?'tag':'ppu',k2=group==='tag'?'ppu':'tag';
+    const G=new Map();
+    E.forEach(e=>{const a=e[k1],b=e[k2];if(!G.has(a))G.set(a,{key:a,m:zero(months),subs:new Map()});const g=G.get(a);g.m[e.month]+=e.kg;if(!g.subs.has(b))g.subs.set(b,{key:b,m:zero(months)});g.subs.get(b).m[e.month]+=e.kg});
+    const tot=o=>months.reduce((s,m)=>s+o.m[m],0);
+    const show=o=>{let acc=0;const r={};months.forEach(m=>{acc+=o.m[m];r[m]=mode==='a'?acc:o.m[m]});return r};
+    let rows=[...G.values()].map(g=>({...g,t:tot(g),c:show(g),subs:[...g.subs.values()].map(x=>({...x,t:tot(x),c:show(x)})).sort((a,b)=>b.t-a.t)}));
+    rows.sort(group==='tag'?(a,b)=>b.t-a.t:(a,b)=>cmpPpu(a.key,b.key));
+    const grand=rows.reduce((s,r)=>s+r.t,0);
+    const col={};months.forEach(m=>col[m]=rows.reduce((s,r)=>s+r.c[m],0));
+    const perMonth=months.map(m=>({m,v:rows.reduce((s,r)=>s+r.m[m],0)}));
+    return {E,months,rows,grand,col,perMonth,allPpus,allTags};
   }
+  const lbl=(dim,k)=>dim==='ppu'?`<b>${esc(k)}</b><small>${ITEMS()[k]?esc(cap1(desc(k))):'item não cadastrado no contrato'}</small>`:`<b>${esc(k)}</b>`;
+  function fillFilters(allPpus,allTags){
+    const p=$('ppPpu'),t=$('ppTag');
+    if(selP&&!allPpus.includes(selP))selP='';if(selT&&!allTags.includes(selT))selT='';
+    if(p)p.innerHTML='<option value="">Todos os itens</option>'+allPpus.map(k=>`<option value="${esc(k)}"${k===selP?' selected':''}>${esc(k)}${desc(k)?' · '+esc(cap1(desc(k))):''}</option>`).join('');
+    if(t)t.innerHTML='<option value="">Todas as estruturas</option>'+allTags.map(k=>`<option value="${esc(k)}"${k===selT?' selected':''}>${esc(k)}</option>`).join('');
+  }
+  const isOpen=k=>allOpen?!closed.has(k):open.has(k);
   function render(){
     if(!$('ppTable')||typeof D==='undefined')return;
-    const sec=$('pesoppu');if(sec&&sec.classList.contains('hidden')){dirty=true;return}
-    dirty=false;
-    const {months,ppus,ks,M,cell,rowTot,colTot,grand}=view();
-    fillFilter(ppus);
-    // ----- KPIs
-    const perMonth=months.map(m=>({m,v:ks.reduce((s,k)=>s+M[k][m],0)}));
+    const sec=$('pesoppu');if(sec&&sec.classList.contains('hidden'))return;
+    const {months,rows,grand,col,perMonth,allPpus,allTags}=view();
+    fillFilters(allPpus,allTags);
+    const d1=group==='tag'?'tag':'ppu',d2=group==='tag'?'ppu':'tag';
+    // ----- indicadores
     const best=perMonth.reduce((a,b)=>b.v>a.v?b:a,{m:'',v:0});
     const withV=perMonth.filter(x=>x.v>0.005),last=withV.length?withV[withV.length-1]:{m:'',v:0};
+    const nTags=new Set(rows.flatMap(r=>group==='tag'?[r.key]:r.subs.map(s=>s.key))).size;
+    const filt=[selP&&('item '+selP),selT&&selT].filter(Boolean).join(' · ');
     const kp=[
-      {c:'',l:'Peso executado total',v:kg(grand),s:selP?`item ${selP}`:'todos os itens PPU, inclusive excedente'},
+      {c:'',l:'Peso executado total',v:kg(grand),s:filt||'todos os itens e estruturas, inclusive excedente'},
       {c:'ok',l:last.m?`Executado em ${cap1(last.m)}`:'Último mês',v:kg(last.v),s:'último mês com lançamento'},
       {c:'amb',l:'Mês de maior execução',v:best.m?cap1(best.m):'—',s:best.m?kg(best.v):'sem lançamentos'},
-      {c:'',l:'Itens PPU com execução',v:String(ks.filter(k=>rowTot(k)>0.005).length),s:`${perMonth.filter(x=>x.v>0.005).length} ${perMonth.filter(x=>x.v>0.005).length===1?'mês':'meses'} com lançamento`}
+      {c:'',l:'Estruturas com execução',v:String(nTags),s:`${withV.length} ${withV.length===1?'mês':'meses'} com lançamento`}
     ];
     $('ppKpis').innerHTML=kp.map(x=>`<div class="pp-kpi ${x.c}"><small>${esc(x.l)}</small><b title="${esc(x.v)}">${esc(x.v)}</b><em>${esc(x.s)}</em></div>`).join('');
-    $('ppNote').textContent=mode==='a'?'cada mês mostra o acumulado até ele; a coluna Total é o executado de todos os meses':'peso lançado em cada mês; a coluna Total soma todos os meses';
-    // ----- Tabela PPU × mês
-    if(!ks.length||!months.length){$('ppTable').innerHTML='<tbody><tr><td class="pp-empty">Sem lançamentos de peso.</td></tr></tbody>';}
+    $('ppTitle').textContent=group==='tag'?'PESO EXECUTADO POR ESTRUTURA (TAG) × MÊS':'PESO EXECUTADO POR PPU × MÊS';
+    $('ppNote').textContent=(group==='tag'?'clique numa estrutura para ver os itens PPU':'clique num item para ver as estruturas (TAGs)')+(mode==='a'?' · cada mês mostra o acumulado até ele':'');
+    $('ppExpand').textContent=allOpen&&!closed.size?'Recolher tudo':'Expandir tudo';
+    // ----- tabela com detalhamento
+    if(!rows.length||!months.length){$('ppTable').innerHTML='<tbody><tr><td class="pp-empty">Sem lançamentos de peso para o filtro.</td></tr></tbody>';}
     else{
-      $('ppTable').innerHTML=`<thead><tr><th>Item PPU</th>${months.map(m=>`<th class="r">${esc(cap1(m))}</th>`).join('')}<th class="r">Total</th><th class="r">% do total</th></tr></thead><tbody>
-        ${ks.map(k=>{const t=rowTot(k),sh=grand?t/grand:0,out=!ITEMS()[k];
-          return `<tr${out?' class="out"':''}><td><b>${esc(k)}</b><small>${out?'item não cadastrado no contrato':esc(cap1(desc(k)))}</small></td>
-          ${months.map(m=>{const v=cell[k][m];return `<td class="r${v>0.005?'':' z'}">${v>0.005?num(v):'—'}</td>`}).join('')}
-          <td class="r totc">${num(t)}</td><td class="r">${(sh*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%<div class="pp-share"><i style="width:${Math.min(100,sh*100)}%"></i></div></td></tr>`}).join('')}
-        ${ks.length>1?`<tr class="tot"><td>Total (kg)</td>${months.map(m=>`<td class="r">${num(colTot(m))}</td>`).join('')}<td class="r">${num(grand)}</td><td class="r">100,0%</td></tr>`:''}</tbody>`;
+      const cells=c=>months.map(m=>{const v=c[m];return `<td class="r${v>0.005?'':' z'}">${v>0.005?num(v):'—'}</td>`}).join('');
+      const share=t=>{const sh=grand?t/grand:0;return `<td class="r">${(sh*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%<div class="pp-share"><i style="width:${Math.min(100,sh*100)}%"></i></div></td>`};
+      $('ppTable').innerHTML=`<thead><tr><th>${group==='tag'?'Estrutura (TAG)':'Item PPU'}</th>${months.map(m=>`<th class="r">${esc(cap1(m))}</th>`).join('')}<th class="r">Total</th><th class="r">% do total</th></tr></thead><tbody>
+        ${rows.map(r=>{const o=isOpen(r.key),out=d1==='ppu'&&!ITEMS()[r.key];
+          return `<tr class="pp-g${o?' open':''}${out?' out':''}" data-pp-k="${esc(r.key)}"><td><div class="pp-cw"><button type="button" class="pp-tog" aria-expanded="${o}" aria-label="${o?'Recolher':'Expandir'} ${esc(r.key)}">${o?'▾':'▸'}</button><span class="pp-lbl">${lbl(d1,r.key)}<small class="pp-cnt">${r.subs.length} ${d2==='tag'?(r.subs.length===1?'estrutura':'estruturas'):(r.subs.length===1?'item':'itens')}</small></span></div></td>${cells(r.c)}<td class="r totc">${num(r.t)}</td>${share(r.t)}</tr>`+
+          (o?r.subs.map(x=>`<tr class="pp-sub"><td><span class="pp-lbl">${d2==='ppu'?`<b>${esc(x.key)}</b><small>${esc(cap1(desc(x.key)))}</small>`:esc(x.key)}</span></td>${cells(x.c)}<td class="r totc">${num(x.t)}</td><td class="r pp-of">${r.t?((x.t/r.t)*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'% do grupo':''}</td></tr>`).join(''):'')}).join('')}
+        ${rows.length>1?`<tr class="tot"><td>Total (kg)</td>${months.map(m=>`<td class="r">${num(col[m])}</td>`).join('')}<td class="r">${num(grand)}</td><td class="r">100,0%</td></tr>`:''}</tbody>`;
     }
-    drawChart(months,ks,M);
-    const pm=$('ppPrintMeta');if(pm)pm.textContent=`Item: ${selP||'todos'} · Exibição: ${mode==='a'?'acumulado':'peso do mês'} · Emitido em ${new Date().toLocaleString('pt-BR')}`;
+    drawChart(months,rows);
+    const pm=$('ppPrintMeta');if(pm)pm.textContent=`Agrupado por: ${group==='tag'?'estrutura':'item PPU'} · Item: ${selP||'todos'} · Estrutura: ${selT||'todas'} · ${mode==='a'?'acumulado':'peso do mês'} · Emitido em ${new Date().toLocaleString('pt-BR')}`;
   }
-  const PAL=['#1E4A66','#C88743','#2C7A58','#B4432B','#5B7FA3','#8A6BB0','#3E9AA6','#9C7A3C','#6B767D','#D19A6A','#4F8F6B','#A3485B'];
-  function drawChart(months,ks,M){
+  const PAL=['#1E4A66','#C88743','#2C7A58','#B4432B','#5B7FA3','#8A6BB0','#3E9AA6','#9C7A3C','#6B767D','#D19A6A','#4F8F6B','#A3485B','#3B5B8C','#B8A04A','#7C4E9C','#2E8C8C'];
+  function drawChart(months,rows){
     const cv=$('ppChart');if(!cv||typeof Chart==='undefined')return;
-    const datasets=ks.map((k,i)=>({label:k+(desc(k)?' · '+cap1(desc(k)):''),data:months.map(m=>+M[k][m].toFixed(2)),backgroundColor:PAL[i%PAL.length],borderRadius:3,maxBarThickness:46}));
+    $('ppChartNote').textContent=group==='tag'?'barras empilhadas por estrutura (TAG)':'barras empilhadas por item PPU';
+    const datasets=rows.map((r,i)=>({label:r.key+(group==='ppu'&&desc(r.key)?' · '+cap1(desc(r.key)):''),data:months.map(m=>+r.m[m].toFixed(2)),backgroundColor:PAL[i%PAL.length],borderRadius:3,maxBarThickness:46}));
     const cfg={type:'bar',data:{labels:months.map(cap1),datasets},options:{responsive:true,maintainAspectRatio:false,animation:false,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>`${c.dataset.label}: ${kg(c.parsed.y)}`,footer:it=>'Total: '+kg(it.reduce((s,x)=>s+x.parsed.y,0))}}},
+      plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{mode:'index',intersect:false,filter:it=>it.parsed.y>0,callbacks:{label:c=>`${c.dataset.label}: ${kg(c.parsed.y)}`,footer:it=>'Total: '+kg(it.reduce((s,x)=>s+x.parsed.y,0))}}},
       scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>nf.format(v)}}}}};
     if(chart){chart.data=cfg.data;chart.update();}else{chart=new Chart(cv.getContext('2d'),cfg);}
   }
   // ----- Excel
   function exportXlsx(){
-    const {months,ks,M,cell,rowTot,colTot,grand}=view();
+    const {E,months}=view();
     const wb=XLSX.utils.book_new(),add=(n,a,w)=>{const ws=XLSX.utils.aoa_to_sheet(a);ws['!cols']=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,n)};
-    const head=['Item PPU','Descrição',...months.map(cap1),'Total (kg)'];
-    const mat=(getV,title)=>{const a=[[title],['Emitido em',new Date().toLocaleString('pt-BR')],['Item PPU',selP||'Todos'],[],head];
-      ks.forEach(k=>a.push([k,desc(k)||'Item não cadastrado no contrato',...months.map(m=>+getV(k,m).toFixed(2)),+rowTot(k).toFixed(2)]));
-      a.push(['Total','',...months.map(m=>+ks.reduce((s,k)=>s+getV(k,m),0).toFixed(2)),+grand.toFixed(2)]);return a};
-    const w=[12,32,...months.map(()=>14),16];
-    add('PESO_DO_MES',mat((k,m)=>M[k][m],'PESO EXECUTADO POR PPU E MÊS (kg) — inclui excedente'),w);
-    add('ACUMULADO',mat((k,m)=>{let s=0;for(const x of months){s+=M[k][x];if(x===m)break}return s},'PESO EXECUTADO ACUMULADO POR PPU (kg) — inclui excedente'),w);
-    XLSX.writeFile(wb,`Peso_por_PPU_${selP||'todos'}.xlsx`.replace(/\s+/g,'_'));
+    const head=[['Emitido em',new Date().toLocaleString('pt-BR')],['Item PPU',selP||'Todos'],['Estrutura (TAG)',selT||'Todas'],[]];
+    const r2=v=>Math.round(v*100)/100;
+    const matrix=(title,keyOf,label)=>{const g=new Map();E.forEach(e=>{const k=keyOf(e);if(!g.has(k))g.set(k,zero(months));g.get(k)[e.month]+=e.kg});
+      const ks=[...g.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true}));const a=[[title],...head,[...label,...months.map(cap1),'Total (kg)']];
+      ks.forEach(k=>{const parts=k.split('§');a.push([...parts,...months.map(m=>r2(g.get(k)[m])),r2(months.reduce((s,m)=>s+g.get(k)[m],0))])});
+      a.push(['Total',...label.slice(1).map(()=>''),...months.map(m=>r2(E.filter(e=>e.month===m).reduce((s,e)=>s+e.kg,0))),r2(E.reduce((s,e)=>s+e.kg,0))]);return a};
+    const w=n=>[...Array(n).fill(16),...months.map(()=>13),15];
+    add('POR_ESTRUTURA',matrix('PESO EXECUTADO POR ESTRUTURA (TAG) E MÊS (kg) — inclui excedente',e=>e.tag,['Estrutura (TAG)']),w(1));
+    add('ESTRUTURA_x_PPU',matrix('PESO EXECUTADO POR ESTRUTURA, ITEM PPU E MÊS (kg)',e=>e.tag+'§'+e.ppu+'§'+(desc(e.ppu)||''),['Estrutura (TAG)','Item PPU','Descrição']),[22,10,30,...months.map(()=>13),15]);
+    add('POR_PPU',matrix('PESO EXECUTADO POR ITEM PPU E MÊS (kg) — inclui excedente',e=>e.ppu+'§'+(desc(e.ppu)||''),['Item PPU','Descrição']),[10,30,...months.map(()=>13),15]);
+    const det=[['LANÇAMENTOS (base histórica + online)'],...head,['Mês','Estrutura (TAG)','Item PPU','Descrição','Peso (kg)']];
+    [...E].sort((a,b)=>mIdx(a.month)-mIdx(b.month)||a.tag.localeCompare(b.tag)||cmpPpu(a.ppu,b.ppu)).forEach(e=>det.push([cap1(e.month),e.tag,e.ppu,desc(e.ppu),r2(e.kg)]));
+    add('LANCAMENTOS',det,[12,24,10,30,12]);
+    XLSX.writeFile(wb,`Peso_executado_${selT||'estruturas'}_${selP||'itens'}.xlsx`.replace(/[\s/\\]+/g,'_'));
   }
   function withXlsx(fn,btn){
     if(window.XLSX&&XLSX.utils)return fn();
@@ -8656,11 +8694,15 @@ html body main.wrap .v93-read .ok{color:var(--c-green)!important}
     render();
   }
   function bind(){
-    const p=$('ppPpu'),md=$('ppMode'),x=$('ppXlsx'),pr=$('ppPrint');if(!p)return;
-    p.onchange=()=>{selP=p.value;render()};md.onchange=()=>{mode=md.value;render()};
+    const p=$('ppPpu'),tg=$('ppTag'),gr=$('ppGroup'),md=$('ppMode'),x=$('ppXlsx'),pr=$('ppPrint');if(!p)return;
+    p.onchange=()=>{selP=p.value;render()};tg.onchange=()=>{selT=tg.value;render()};md.onchange=()=>{mode=md.value;render()};
+    gr.onchange=()=>{group=gr.value;open.clear();closed.clear();allOpen=true;render()};
+    $('ppExpand').onclick=()=>{const all=allOpen&&!closed.size;open.clear();closed.clear();allOpen=!all;render()};
     x.onclick=()=>withXlsx(exportXlsx,x);
     pr.onclick=()=>{render();document.body.classList.add('pp-printing');setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove('pp-printing'),300)},50)};
     window.addEventListener('afterprint',()=>document.body.classList.remove('pp-printing'));
+    $('ppTable').addEventListener('click',e=>{const r=e.target.closest('tr.pp-g');if(!r)return;const k=r.dataset.ppK;
+      if(allOpen){closed.has(k)?closed.delete(k):closed.add(k)}else{open.has(k)?open.delete(k):open.add(k)}render()});
     document.addEventListener('click',e=>{
       const b=e.target.closest('[data-go]');
       if(b&&b.dataset.go==='pesoppu'){setTimeout(show,0);return}
