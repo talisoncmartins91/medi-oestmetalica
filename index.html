@@ -7065,7 +7065,7 @@ main.wrap #pesoKpis .kv{font-size:clamp(18px,1.45vw,22px)!important}
     const now=new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     set('curvePageUpdated',now);set('curvePlanSync','Atualizado '+now);set('curveFooterUpdated',now);
     const foot=document.querySelector('#curvas .curve-footnote span');
-    if(foot)foot.innerHTML='Curva calculada com o aditivo considerado aprovado para <b>3.9.3 e 4.3.6.2</b>: o executado acima do contrato inicial desses itens entra como realizado até o limite do aditivo.';
+    if(foot)foot.innerHTML='Curva calculada com o aditivo previsto (ainda pendente de aprovação) para <b>3.9.3 e 4.3.6.2</b>: o executado acima do contrato inicial desses itens entra como realizado até o limite do aditivo.';
   };
 
   // Tabela mensal (corrige a função inexistente normalizePpu e usa o cenário com aditivo)
@@ -9132,6 +9132,245 @@ main .top::before{font-size:11px!important}
   if(adm&&!adm.classList.contains('hidden')){loadFotos();loadInfo()}
   // e já busca as fotos para a aba Maquete 3D
   setTimeout(loadFotos,800);
+})();
+
+</script>
+<style id="v102MobileStyle">
+/* ===================== v102 · Celular ===================== */
+@media (max-width:900px){
+  /* indicadores em 2 colunas, mais compactos */
+  .cq-summary-grid,.ex2-kpis,#pesoppu .pp-kpis,.v80-curve-kpis,#pesoAssemblyKpis{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .cq-summary-grid>*,.ex2-kpis>*,#pesoppu .pp-kpis>*{padding:12px 13px!important;min-width:0;margin:0!important}
+  .ex2-kpis>* b,#pesoppu .pp-kpis>* b{font-size:19px!important;white-space:normal!important;word-break:break-word}
+  .cq-summary-grid>* strong,.cq-summary-grid>* b,.cq-summary-grid>* .cq-summary-value{font-size:22px!important}
+  .ex2-kpis>* em,#pesoppu .pp-kpis>* em{font-size:11.5px!important;line-height:1.35}
+  .v80-curve-kpis>*{min-width:0;padding:12px!important}
+  /* filtros: todos com a mesma largura, botões ocupando a linha */
+  .ex2-filters,#pesoppu .pp-filters{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%}
+  .ex2-filters .ex2-f,#pesoppu .pp-filters .pp-f{width:100%!important;min-width:0!important;margin:0!important;justify-self:stretch!important}
+  .ex2-filters .sel,.ex2-filters select,#pesoppu .pp-filters .sel{width:100%!important;min-width:0!important}
+  .ex2-filters button,#pesoppu .pp-filters button{grid-column:1/-1;width:100%!important;margin:0!important}
+  /* rolagem lateral com sombra indicando que há mais colunas */
+  .v102-scroll{background:linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)) left/24px 100% no-repeat local,linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) right/24px 100% no-repeat local,radial-gradient(farthest-side at 0 50%,rgba(16,29,37,.18),transparent) left/10px 100% no-repeat scroll,radial-gradient(farthest-side at 100% 50%,rgba(16,29,37,.18),transparent) right/10px 100% no-repeat scroll!important;background-color:#fff!important}
+  /* primeira coluna fixa nas tabelas que continuam rolando (mês a mês, semanas) */
+  table.v102-sticky th:first-child,table.v102-sticky td:first-child{position:sticky!important;left:0;z-index:2;background:#fff!important;box-shadow:1px 0 0 #E3E8EB}
+  table.v102-sticky thead th:first-child{background:#F3F5F7!important;z-index:3}
+  table.v102-sticky tr.v80-week-now td:first-child{background:#FFF6E0!important}
+  .v90-heat td:first-child small,.v90-heat td:first-child span{display:none}
+  html body table.v90-heat{width:auto!important;min-width:0!important;table-layout:auto!important}
+  html body table.v90-heat col{width:auto!important}
+  html body table.v90-heat td,html body table.v90-heat th{min-width:54px!important;width:54px}
+  html body table.v90-heat td:first-child,html body table.v90-heat th:first-child{min-width:62px!important;width:62px}
+  html body table.v90-heat td:last-child,html body table.v90-heat th:last-child{min-width:70px!important}
+  html body table.v90-heat td,html body table.v90-heat th{font-size:12px!important;padding-left:4px!important;padding-right:4px!important}
+  /* tabelas largas viram cartões */
+  html body table.v102-cards,table.v102-cards tbody,table.v102-cards tfoot{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+  html body table.v102-cards thead{display:none!important}
+  html body table.v102-cards tr{display:grid!important;grid-template-columns:1fr 1fr;gap:8px 14px;padding:13px 14px;margin:0 0 10px;border:1px solid #D3DCE2!important;border-radius:12px;background:#fff;height:auto!important;box-shadow:0 1px 3px rgba(16,29,37,.07)}
+  html body table.v102-cards td,table.v102-cards th{display:block!important;padding:0!important;border:0!important;text-align:left!important;white-space:normal!important;min-width:0!important;width:auto!important;height:auto!important;font-size:13.5px!important;line-height:1.35!important;background:transparent!important;position:static!important;box-shadow:none!important}
+  html body table.v102-cards tr:nth-child(n) > td:nth-child(n),html body table.v102-cards tr:nth-child(n) > th:nth-child(n){background:transparent!important}
+  html body table.v102-cards td::before{content:attr(data-label);display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#7A858C;margin-bottom:2px}
+  html body table.v102-cards th::before{content:attr(data-label);display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#7A858C;margin-bottom:2px}
+  html body table.v102-cards td[data-label=""]::before,table.v102-cards td.v102-title::before{display:none}
+  html body table.v102-cards td.v102-title{grid-column:1/-1;font-size:15px!important;padding-bottom:6px!important;border-bottom:1px solid #EDF0F2!important}
+  html body table.v102-cards td.v102-wide,table.v102-cards tr.v102-full td{grid-column:1/-1}
+  html body table.v102-cards tfoot tr,table.v102-cards tr.total,table.v102-cards tr.tot{background:#F3F5F7}
+  html body table.v102-cards .additive-row-actions,table.v102-cards .v100-add-sel{max-width:none;width:100%}
+  .tableWrap:has(> table.v102-cards){overflow:visible!important;max-height:none!important;border:0!important;background:transparent!important}
+  /* cabeçalhos de cartão com botão Minimizar não espremem o título */
+  .tableTitle{flex-wrap:wrap!important;gap:8px!important}
+  .forecast-head #forecastUpdate,.forecast-head span#forecastUpdate{display:none!important}
+  /* toques maiores */
+  .collapse-table-btn,.tag-all-btn{min-height:34px;padding:7px 12px!important}
+  select.sel,select.input,.ex2-filters select{min-height:44px}
+  /* alerta de excedente ocupa a largura toda */
+  #peso .v90-alert,#peso [class*="exceed"]{max-width:none!important;width:auto!important}
+}
+@media (max-width:420px){
+  html body table.v102-cards tr{grid-template-columns:1fr 1fr;padding:12px}
+  .ex2-kpis>* b,#pesoppu .pp-kpis>* b{font-size:17px!important}
+}
+
+</style>
+<script id="v102MobileJS">
+/* ===================== v102 · Celular ===================== */
+(function(){
+  const mq=matchMedia('(max-width:900px)');
+  // tabelas que viram cartões no celular (as que têm muitas colunas e poucas linhas)
+  const CARD_SEL='#cq table,#excedentes table,#aditivo table,#adm table';
+  // tabelas que continuam rolando de lado, com a 1ª coluna fixa
+  const STICKY_SEL='.v90-heat,#curvas table,#pesoppu .pp-tbl,#peso .assembly-table-shell table';
+  function heads(t){
+    const rows=t.tHead?[...t.tHead.rows]:[];const r=rows[rows.length-1];if(!r)return null;
+    const out=[];[...r.cells].forEach(c=>{const n=c.colSpan||1;for(let i=0;i<n;i++)out.push(c.textContent.replace(/\s+/g,' ').trim())});return out;
+  }
+  function cardify(t){
+    const h=heads(t);if(!h||h.length<4){t.classList.remove('v102-cards');return}
+    t.classList.add('v102-cards');
+    [...t.tBodies,...(t.tFoot?[t.tFoot]:[])].forEach(tb=>[...tb.rows].forEach(tr=>{
+      const cells=[...tr.cells];
+      if(cells.length===1){tr.classList.add('v102-full');cells[0].dataset.label='';return}
+      let col=0;cells.forEach((c,i)=>{c.dataset.label=h[col]||'';col+=c.colSpan||1;c.classList.toggle('v102-title',i===0);c.classList.toggle('v102-wide',i>0&&!!c.querySelector('select,button,.additive-row-actions'))});
+    }));
+  }
+  function scrollHint(el){if(el&&el.scrollWidth>el.clientWidth+4)el.classList.add('v102-scroll');else if(el)el.classList.remove('v102-scroll')}
+  function run(){
+    if(!mq.matches){document.querySelectorAll('table.v102-cards').forEach(t=>t.classList.remove('v102-cards'));return}
+    document.querySelectorAll(CARD_SEL).forEach(cardify);
+    document.querySelectorAll(STICKY_SEL).forEach(t=>t.classList.add('v102-sticky'));
+    document.querySelectorAll('.tableWrap,.v90-heat-wrap,.curve-plan-table,.assembly-table-shell').forEach(scrollHint);
+  }
+  let pend=0;
+  const obs=new MutationObserver(ms=>{if(ms.every(m=>m.target.closest&&m.target.closest('.exec-sidebar,.exec-page-head,#v101Toast')))return;clearTimeout(pend);pend=setTimeout(run,120)});
+  obs.observe(document.querySelector('main.wrap')||document.body,{childList:true,subtree:true});
+  mq.addEventListener&&mq.addEventListener('change',run);
+  addEventListener('resize',()=>{clearTimeout(pend);pend=setTimeout(run,200)});
+  setTimeout(run,600);
+})();
+
+</script>
+<div class="v103-modal" id="v103Modal" role="dialog" aria-modal="true" aria-labelledby="v103T" hidden>
+  <div class="v103-box">
+    <div class="v103-top"><div><h3 id="v103T">Exportar apresentação</h3><p>Mapa Visual · Estrutura Metálica (PowerPoint). A data é a de hoje; o slide do mapa por área sai como no modelo.</p></div><button class="v103-x" id="v103Close" type="button" aria-label="Fechar">✕</button></div>
+    <div class="v103-two">
+      <label class="v103-f"><span>Imagem 1 <small>(em cima, à esquerda)</small></span><select id="v103Img1"></select><img id="v103Prev1" alt="Prévia da imagem 1" hidden></label>
+      <label class="v103-f"><span>Imagem 2 <small>(embaixo, à direita)</small></span><select id="v103Img2"></select><img id="v103Prev2" alt="Prévia da imagem 2" hidden></label>
+    </div>
+    <p class="v103-note" id="v103Note"></p>
+    <div class="v103-act"><button class="v103-btn" id="v103Cancel" type="button">Cancelar</button><button class="v103-btn primary" id="v103Go" type="button">Exportar apresentação</button></div>
+  </div>
+</div>
+<style id="v103PptStyle">
+/* ===================== v103 · Exportar apresentação (PowerPoint) ===================== */
+.v103-modal{position:fixed;inset:0;z-index:10050;background:rgba(10,18,24,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.v103-modal[hidden]{display:none!important}
+.v103-box{background:#fff;border-radius:16px;width:min(760px,100%);max-height:92vh;overflow:auto;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.v103-top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.v103-top h3{margin:0 0 4px!important;font-size:20px!important;color:#16212B!important;text-transform:none!important;letter-spacing:0!important}
+.v103-top p{margin:0 0 16px;font-size:13px;color:#5E6B74;line-height:1.45}
+.v103-x{border:1px solid #DDE3E7!important;background:#fff!important;color:#1E2A33!important;border-radius:8px!important;width:36px;height:36px;cursor:pointer;font-size:15px!important}
+.v103-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.v103-f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#1E2A33;min-width:0}
+.v103-f small{font-weight:500;color:#6b767d}
+.v103-f select{height:42px;border:1px solid #C9D2D8;border-radius:9px;padding:0 10px;font-size:13px;background:#fff;color:#1E2A33;width:100%}
+.v103-f img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:9px;border:1px solid #DDE3E7;background:#EEF2F4}
+.v103-note{font-size:12.5px;color:#5E6B74;margin:12px 0 0;line-height:1.45}
+.v103-note.bad{color:#9B2C1C;font-weight:600}
+.v103-act{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.v103-btn{border:1px solid #C9D2D8!important;background:#fff!important;color:#1E2A33!important;font-weight:700!important;font-size:13px!important;padding:10px 16px!important;border-radius:9px!important;cursor:pointer;text-transform:none!important;letter-spacing:0!important}
+.v103-btn.primary{background:#1E4A66!important;border-color:#1E4A66!important;color:#fff!important}
+.v103-btn:disabled{opacity:.5;cursor:wait}
+#v103Open{margin-right:8px}
+@media (max-width:700px){.v103-two{grid-template-columns:1fr}.v103-box{padding:18px}.v103-act .v103-btn{flex:1}}
+
+</style>
+<script id="v103PptJS">
+/* ===================== v103 · Exportar apresentação (PowerPoint) ===================== */
+// O modelo fica no repositório do site (mesma pasta do index.html) com o nome abaixo.
+// O painel troca a data dos slides e as duas imagens do slide "Acompanhamento visual · Maquete";
+// o restante (mapa por área, tabela e gráfico) sai como no modelo.
+(function(){
+  const MODELO='modelo-apresentacao.pptx';
+  const API=(typeof API_BASE!=='undefined'?API_BASE:'https://steel-structure-api.talisonc-martins91.workers.dev');
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const nice=n=>String(n||'').replace(/\.[^.]+$/,'');
+  const when=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleDateString('pt-BR')};
+  const say=(m,bad)=>{let t=$('v101Toast');if(!t){t=document.createElement('div');t.id='v101Toast';t.setAttribute('role','status');document.body.appendChild(t)}t.textContent=m;t.className=bad?'bad on':'on';clearTimeout(say.t);say.t=setTimeout(()=>t.className=bad?'bad':'',bad?8000:5000)};
+  // botão na aba Maquete 3D
+  const rb=$('refreshMaqueteImages');
+  if(rb){const b=document.createElement('button');b.id='v103Open';b.className='action-btn export';b.type='button';b.textContent='EXPORTAR APRESENTAÇÃO';rb.parentNode.insertBefore(b,rb)}
+  let OPTS=[];
+  async function options(){
+    const out=[];
+    try{const r=await fetch(API+'/api/maquete/fotos',{cache:'no-store'});const j=await r.json();
+      (j.fotos||[]).sort((a,b)=>nice(a.nome).localeCompare(nice(b.nome),'pt-BR',{numeric:true}))
+        .forEach(f=>out.push({id:'c:'+f.key,label:`${nice(f.nome)} · ${when(f.uploaded)}`,url:`${API}/api/maquete/foto?key=${encodeURIComponent(f.key)}&v=${encodeURIComponent(f.uploaded||'')}`}))}catch(e){}
+    // imagens que estão na aba (inclui as do GitHub quando ainda não há fotos na nuvem)
+    document.querySelectorAll('#maquete3d .maquete-card').forEach(c=>{const img=c.querySelector('img');if(!img)return;const src=img.dataset.src||img.getAttribute('src')||'';if(!src||out.some(o=>src.includes(o.id.slice(2))))return;
+      const name=(c.querySelector('.maquete-head b')||{}).textContent||nice(decodeURIComponent(src.split('/').pop().split('?')[0]));out.push({id:'u:'+src,label:name.trim(),url:src})});
+    return out;
+  }
+  function fill(sel,def){sel.innerHTML=OPTS.map(o=>`<option value="${esc(o.id)}"${o.id===def?' selected':''}>${esc(o.label)}</option>`).join('')+`<option value=""${def?'':' selected'}>Manter a imagem do modelo</option>`}
+  function prev(sel,img){const o=OPTS.find(x=>x.id===sel.value);img.hidden=!o;if(o)img.src=o.url;else img.removeAttribute('src')}
+  async function open(){
+    $('v103Modal').hidden=false;$('v103Note').className='v103-note';$('v103Note').textContent='Carregando as imagens…';
+    OPTS=await options();
+    fill($('v103Img1'),OPTS[0]&&OPTS[0].id);fill($('v103Img2'),OPTS[1]&&OPTS[1].id);
+    prev($('v103Img1'),$('v103Prev1'));prev($('v103Img2'),$('v103Prev2'));
+    $('v103Note').textContent=OPTS.length?'Escolha as duas imagens. Elas entram no mesmo lugar e tamanho do modelo, sem distorcer.':'Nenhuma imagem da maquete encontrada: a apresentação sai com as imagens do modelo.';
+  }
+  const close=()=>{$('v103Modal').hidden=true};
+  document.addEventListener('click',e=>{if(e.target.closest('#v103Open'))open();if(e.target.closest('#v103Close,#v103Cancel')||e.target.id==='v103Modal')close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('v103Modal').hidden)close()});
+  $('v103Img1').onchange=()=>prev($('v103Img1'),$('v103Prev1'));$('v103Img2').onchange=()=>prev($('v103Img2'),$('v103Prev2'));
+
+  // ---------- montagem do .pptx ----------
+  let zipLib=null;
+  function loadZip(){if(window.JSZip)return Promise.resolve(window.JSZip);if(zipLib)return zipLib;
+    zipLib=new Promise((ok,ko)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';s.onload=()=>ok(window.JSZip);s.onerror=()=>{zipLib=null;ko(new Error('não consegui carregar o gerador de PowerPoint (verifique a internet)'))};document.head.appendChild(s)});return zipLib}
+  async function imageBytes(url){
+    const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error('não consegui baixar a imagem escolhida ('+r.status+')');
+    let blob=await r.blob();const bmp=await createImageBitmap(blob);let ext=/png/.test(blob.type)?'png':'jpeg';
+    if(!/jpe?g|png/.test(blob.type)){const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;c.getContext('2d').drawImage(bmp,0,0);blob=await new Promise(res=>c.toBlob(res,'image/jpeg',.92));ext='jpeg'}
+    return {bytes:new Uint8Array(await blob.arrayBuffer()),ext,w:bmp.width,h:bmp.height};
+  }
+  const relsOf=p=>p.replace(/([^/]+)$/,'_rels/$1.rels');
+  const resolve=(from,target)=>{const b=from.split('/').slice(0,-1);for(const p of target.split('/')){if(p==='..')b.pop();else if(p!=='.')b.push(p)}return b.join('/')};
+  function pics(s){const out=[];for(const pic of s.match(/<p:pic>[\s\S]*?<\/p:pic>/g)||[]){const o=pic.match(/<a:off x="(\d+)" y="(\d+)"\/><a:ext cx="(\d+)" cy="(\d+)"\/>/),id=(pic.match(/r:embed="([^"]+)"/)||[])[1];if(o&&id)out.push({pic,id,x:+o[1],y:+o[2],w:+o[3],h:+o[4],a:o[3]*o[4]})}
+    out.sort((a,b)=>b.a-a.a);return out.filter(p=>p.a>=(out[0]?out[0].a*.2:0))}
+  async function build(id1,id2){
+    const JSZip=await loadZip();
+    const r=await fetch(MODELO+'?v='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw new Error(r.status===404?`o modelo "${MODELO}" não está no repositório do site`:`não consegui baixar o modelo (${r.status})`);
+    const zip=await JSZip.loadAsync(await r.arrayBuffer());
+    const today=new Date().toLocaleDateString('pt-BR'),warn=[];
+    const slides=Object.keys(zip.files).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n));
+    let used=false;
+    for(const sp of slides){
+      let s=await zip.file(sp).async('string');
+      s=s.replace(/<p:sp>[\s\S]*?<\/p:sp>/g,blk=>/DATA\s*<\/a:t>/.test(blk)?blk.replace(/\d{2}\/\d{2}\/\d{4}/g,today):blk);
+      const plain=(s.match(/<a:t>[^<]*<\/a:t>/g)||[]).map(t=>t.slice(5,-6)).join(' ');
+      if(/ACOMPANHAMENTO VISUAL/i.test(plain)&&(id1||id2)){
+        used=true;
+        const slots=pics(s).slice(0,2).sort((a,b)=>a.y-b.y||a.x-b.x),picks=[id1,id2],relsP=relsOf(sp);
+        let rels=await zip.file(relsP).async('string');
+        for(let k=0;k<2;k++){
+          const o=OPTS.find(x=>x.id===picks[k]);if(!o)continue;
+          const slot=slots[k];if(!slot){warn.push(`o modelo não tem a imagem ${k+1} nesse slide`);continue}
+          const img=await imageBytes(o.url),name=`maquete_${k+1}_${Date.now().toString(36)}.${img.ext}`;
+          zip.file('ppt/media/'+name,img.bytes);
+          const re=new RegExp(`(<Relationship[^>]*Id="${slot.id}"[^>]*Target=")([^"]+)(")`),old=(rels.match(re)||[])[2];
+          rels=rels.replace(re,`$1../media/${name}$3`);
+          // tira a imagem antiga do pacote se nenhum outro slide usa
+          if(old){const oldP=resolve(sp,old),base=old.split('/').pop();let still=false;for(const n of Object.keys(zip.files))if(/\.rels$/.test(n)&&n!==relsP&&(await zip.file(n).async('string')).includes(base)){still=true;break}if(!still&&!rels.includes(base))zip.remove(oldP)}
+          // encaixa sem distorcer, centralizada no espaço do modelo
+          const f=Math.min(slot.w/img.w,slot.h/img.h),w=Math.round(img.w*f),h=Math.round(img.h*f);
+          const np=slot.pic.replace(/<a:off x="\d+" y="\d+"\/><a:ext cx="\d+" cy="\d+"\/>/,`<a:off x="${slot.x+Math.round((slot.w-w)/2)}" y="${slot.y+Math.round((slot.h-h)/2)}"/><a:ext cx="${w}" cy="${h}"/>`).replace(/<a:srcRect[^>]*\/>/,'<a:srcRect/>');
+          s=s.replace(slot.pic,np);
+        }
+        zip.file(relsP,rels);
+      }
+      zip.file(sp,s);
+    }
+    if((id1||id2)&&!used)warn.push('não achei o slide "Acompanhamento visual" no modelo; as imagens não foram trocadas');
+    let ct=await zip.file('[Content_Types].xml').async('string');
+    for(const [e,t] of [['jpg','image/jpeg'],['jpeg','image/jpeg'],['png','image/png']])if(!new RegExp(`Extension="${e}"`,'i').test(ct))ct=ct.replace(/<Types[^>]*>/,m=>m+`<Default Extension="${e}" ContentType="${t}"/>`);
+    zip.file('[Content_Types].xml',ct);
+    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
+    return {blob,warn};
+  }
+  window.v103Build=build;
+  $('v103Go').onclick=async()=>{
+    const b=$('v103Go');b.disabled=true;b.textContent='Gerando…';
+    try{
+      const {blob,warn}=await build($('v103Img1').value,$('v103Img2').value);
+      const d=new Date(),stamp=`${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}h${String(d.getMinutes()).padStart(2,'0')}`;
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Mapa_Visual_-_EstMetalica_${stamp}.pptx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+      close();say(warn.length?'Apresentação gerada. Atenção: '+warn.join('; ')+'.':'Apresentação gerada.',warn.length>0);
+    }catch(err){$('v103Note').className='v103-note bad';$('v103Note').textContent='Não foi possível gerar: '+err.message}
+    finally{b.disabled=false;b.textContent='Exportar apresentação'}
+  };
 })();
 
 </script>
