@@ -3,6 +3,7 @@
 <title>Painel Executivo — Pesos, Aditivos & ADM</title>
 <!-- V80 CORPORATIVO — curva semanal c/ aditivo aprovado, excedente explícito — 2026-10-13 -->
 <!-- V93 — cards do financeiro filtrados por mês/Todos + excedentes em kg no Avanço Físico + barras da curva explicadas — 2026-10-14 -->
+<!-- V94 — Excel do financeiro com aba PREVISAO (mesmo formato do ULTIMO_AVANCO) — 2026-11-09 -->
 <!-- V92 — Financeiro por mês (previsto × medido × excedente) + mapa de excedentes + atualização ao vivo — 2026-10-14 -->
 <!-- V91 — ADM legível no tema claro + exclusão de previstos + quadro do mês ativo — 2026-10-13 -->
 <!-- V69 PRO ADM — EDIÇÃO/DESFAZER + PRÓXIMO MÊS + EXECUTADO/EXCEDENTE — 2026-09-24 -->
@@ -4047,6 +4048,31 @@ function exportFinExcel(){
    if(wsUltimo['C'+rr])wsUltimo['C'+rr].z='#,##0.00';
  }
  XLSX.utils.book_append_sheet(wb,wsUltimo,'ULTIMO_AVANCO');
+
+ // PREVISÃO — mesma formatação da aba ULTIMO_AVANCO.
+ // Uma linha para cada item PPU selecionado, com o previsto original (travado)
+ // do mês filtrado (ou de todos os meses, se o filtro for TODOS) e da TAG filtrada.
+ const prevUp=v=>String(v||'').trim().toUpperCase();
+ let prevRows=[];
+ try{prevRows=(typeof originalForecastRows==='function')?originalForecastRows():(CLOUD_FORECASTS||[])}catch(e){prevRows=CLOUD_FORECASTS||[]}
+ const prevKgByItem={};
+ prevRows
+   .filter(r=>m.value==='TODOS'||prevUp(r.month)===prevUp(m.value))
+   .filter(r=>t.value==='TODAS'||prevUp(r.tag)===prevUp(t.value))
+   .forEach(r=>{const k=String(r.item_ppu||'').trim();prevKgByItem[k]=(prevKgByItem[k]||0)+Number(r.kg||0)});
+ const previsao=[['ITEM PPU / DESCRIÇÃO','VALOR EM DINHEIRO','VALOR EM PESO']];
+ shown.forEach(k=>{
+   const x=F.items[k],peso=Number(prevKgByItem[k]||0);
+   previsao.push([`B_${k} — ${CONTRACT_EXPORT_NAMES[k]||x.desc}`,Number(peso*x.unit),peso]);
+ });
+ const wsPrevisao=XLSX.utils.aoa_to_sheet(previsao);
+ wsPrevisao['!cols']=[{wch:62},{wch:24},{wch:22}];
+ wsPrevisao['!freeze']={xSplit:0,ySplit:1};
+ for(let rr=2;rr<=previsao.length;rr++){
+   if(wsPrevisao['B'+rr])wsPrevisao['B'+rr].z='#,##0.00';
+   if(wsPrevisao['C'+rr])wsPrevisao['C'+rr].z='#,##0.00';
+ }
+ XLSX.utils.book_append_sheet(wb,wsPrevisao,'PREVISAO');
 
 
  // Mesmos percentuais financeiros mostrados no ADM.
