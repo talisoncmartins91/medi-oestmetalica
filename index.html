@@ -9383,6 +9383,7 @@ main .top::before{font-size:11px!important}
     if(!/jpe?g|png/.test(blob.type)){const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;c.getContext('2d').drawImage(bmp,0,0);blob=await new Promise(res=>c.toBlob(res,'image/jpeg',.92));ext='jpeg'}
     return {bytes:new Uint8Array(await blob.arrayBuffer()),ext,w:bmp.width,h:bmp.height};
   }
+  const NF={createFolders:false}; // sem entradas de pasta no zip (o PowerPoint recusa o arquivo)
   const relsOf=p=>p.replace(/([^/]+)$/,'_rels/$1.rels');
   const resolve=(from,target)=>{const b=from.split('/').slice(0,-1);for(const p of target.split('/')){if(p==='..')b.pop();else if(p!=='.')b.push(p)}return b.join('/')};
   function pics(s){const out=[];for(const pic of s.match(/<p:pic>[\s\S]*?<\/p:pic>/g)||[]){const o=pic.match(/<a:off x="(\d+)" y="(\d+)"\/><a:ext cx="(\d+)" cy="(\d+)"\/>/),id=(pic.match(/r:embed="([^"]+)"/)||[])[1];if(o&&id)out.push({pic,id,x:+o[1],y:+o[2],w:+o[3],h:+o[4],a:o[3]*o[4]})}
@@ -9407,24 +9408,27 @@ main .top::before{font-size:11px!important}
           const o=OPTS.find(x=>x.id===picks[k]);if(!o)continue;
           const slot=slots[k];if(!slot){warn.push(`o modelo não tem a imagem ${k+1} nesse slide`);continue}
           const img=await imageBytes(o.url),name=`maquete_${k+1}_${Date.now().toString(36)}.${img.ext}`;
-          zip.file('ppt/media/'+name,img.bytes);
+          zip.file('ppt/media/'+name,img.bytes,NF);
           const re=new RegExp(`(<Relationship[^>]*Id="${slot.id}"[^>]*Target=")([^"]+)(")`),old=(rels.match(re)||[])[2];
           rels=rels.replace(re,`$1../media/${name}$3`);
-          // tira a imagem antiga do pacote se nenhum outro slide usa
-          if(old){const oldP=resolve(sp,old),base=old.split('/').pop();let still=false;for(const n of Object.keys(zip.files))if(/\.rels$/.test(n)&&n!==relsP&&(await zip.file(n).async('string')).includes(base)){still=true;break}if(!still&&!rels.includes(base))zip.remove(oldP)}
+          // a imagem antiga fica no pacote (sem uso): apagar partes do modelo pode deixar o arquivo inválido no PowerPoint
           // encaixa sem distorcer, centralizada no espaço do modelo
           const f=Math.min(slot.w/img.w,slot.h/img.h),w=Math.round(img.w*f),h=Math.round(img.h*f);
-          const np=slot.pic.replace(/<a:off x="\d+" y="\d+"\/><a:ext cx="\d+" cy="\d+"\/>/,`<a:off x="${slot.x+Math.round((slot.w-w)/2)}" y="${slot.y+Math.round((slot.h-h)/2)}"/><a:ext cx="${w}" cy="${h}"/>`).replace(/<a:srcRect[^>]*\/>/,'<a:srcRect/>');
+          const np=slot.pic.replace(/<a:off x="\d+" y="\d+"\/><a:ext cx="\d+" cy="\d+"\/>/,`<a:off x="${slot.x+Math.round((slot.w-w)/2)}" y="${slot.y+Math.round((slot.h-h)/2)}"/><a:ext cx="${w}" cy="${h}"/>`).replace(/<a:srcRect[^>]*\/>/,'<a:srcRect/>')
+            // se a imagem do modelo for SVG, o PowerPoint mostra o SVG e ignora a nova: tira a extensão SVG desta imagem
+            .replace(/<a:ext uri="\{96DAC541-7B7A-43D3-8B79-37D633B846F1\}">[\s\S]*?<\/a:ext>/g,'').replace(/<a:extLst>\s*<\/a:extLst>/g,'');
           s=s.replace(slot.pic,np);
         }
-        zip.file(relsP,rels);
+        zip.file(relsP,rels,NF);
       }
-      zip.file(sp,s);
+      zip.file(sp,s,NF);
     }
     if((id1||id2)&&!used)warn.push('não achei o slide "Acompanhamento visual" no modelo; as imagens não foram trocadas');
     let ct=await zip.file('[Content_Types].xml').async('string');
     for(const [e,t] of [['jpg','image/jpeg'],['jpeg','image/jpeg'],['png','image/png']])if(!new RegExp(`Extension="${e}"`,'i').test(ct))ct=ct.replace(/<Types[^>]*>/,m=>m+`<Default Extension="${e}" ContentType="${t}"/>`);
-    zip.file('[Content_Types].xml',ct);
+    zip.file('[Content_Types].xml',ct,NF);
+    // o PowerPoint não abre pacotes com entradas de pasta: garante que nenhuma vá para o arquivo
+    for(const n of Object.keys(zip.files))if(zip.files[n].dir)delete zip.files[n];
     const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
     return {blob,warn};
   }
